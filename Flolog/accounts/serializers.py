@@ -19,9 +19,10 @@ class ClientRegistrationSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['email', 'first_name', 'last_name', 'phone_number', 'country', 'state', 'city', 'password',]
         extra_kwargs = {
-            'password': {'write_only':True}
-            
+            'password': {'write_only':True}   
         }
+
+    # Validating the email and phone number
 
     def validate(self, args):
         email = args.get('email', None)
@@ -40,6 +41,43 @@ class ClientRegistrationSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data['is_client'] = True
+        return CustomUser.objects.create_user(**validated_data)
+    
+
+class ClientVerifySerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField()
+    
+
+#  Pharmacist registration serializer   
+
+class PharmacistRegistrationSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=250)
+    phone_number = serializers.IntegerField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'first_name', 'last_name', 'phone_number',]
+        extra_kwargs = {
+            'password': {'write_only':True}   
+        }
+
+    # Validating the email and phone number
+
+    def validate(self, args):
+        email = args.get('email', None)
+        # first_name = args.get('first_name', None)
+        # last_name = args.get('last_name', None)
+        phone_number = args.get('phone_number',None)
+        if CustomUser.objects.filter(email=email).exists():
+            raise serializers.ValidationError({'email':('email already exists')})
+        if CustomUser.objects.filter(phone_number=phone_number).exists():
+            raise serializers.ValidationError({'phone_number':('this phone number already exists')})
+        
+        return super().validate(args)
+    
+    def create(self, validated_data):
+        validated_data['is_pharmacist'] = True
         return CustomUser.objects.create_user(**validated_data)
     
 
@@ -70,3 +108,8 @@ class LoginSerializer(serializers.ModelSerializer):
         }
 
     
+class ClientSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = ClientProfile
+        fields = '__all__'

@@ -36,7 +36,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     country = models.CharField(max_length=250, blank=True, null=True)
     state = models.CharField(max_length=250, blank=True, null=True)
     city = models.CharField(max_length=250, blank=True, null=True)
+    otp = models.CharField(max_length=150, blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_client = models.BooleanField(default=False)
     is_pharmacist = models.BooleanField(default=False)
@@ -56,6 +58,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             'access' : str(refresh.access_token)
         } 
     
+#  Client profile.
 
 class ClientProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -72,10 +75,21 @@ class ClientProfile(models.Model):
     def __str__(self):
         return self.email
  
-    
+
+
+# Pharmacist profile. 
 
 class PharmacistProfile(models.Model):
-    pass
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    email = models.EmailField(max_length=250, unique=True)
+    first_name = models.CharField(max_length=250)
+    last_name = models.CharField(max_length=250)
+    phone_number = models.IntegerField(blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
 
 
 # class OrderMedication(models.Model):
