@@ -28,6 +28,8 @@ class ClientRegisterView(generics.GenericAPIView):
         
         return Response(user_data, status=status.HTTP_201_CREATED)
     
+    
+#  Verify the client via OTP
 
 class ClientVerifyView(APIView):
     def post(self, request, format=None):

@@ -92,6 +92,19 @@ class PharmacistProfile(models.Model):
         return self.email
 
 
+class Plan(models.Model):
+    name = models.CharField(max_length=200, blank=True, null=True)
+    price = models.DecimalField(max_digits=20, decimal_places=3, blank=True, null=True)
+    coin_value = models.IntegerField(blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
+
+    def __str__(self):
+        return self.name
+    
+    
+
+
+
 # class OrderMedication(models.Model):
 #     owner = models.ForeignKey(ClientProfile, on_delete=models.CASCADE)
 #     generic_name = models.CharField(max_length=250, blank=True, null=True)

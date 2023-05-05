@@ -66,8 +66,6 @@ class PharmacistRegistrationSerializer(serializers.ModelSerializer):
 
     def validate(self, args):
         email = args.get('email', None)
-        # first_name = args.get('first_name', None)
-        # last_name = args.get('last_name', None)
         phone_number = args.get('phone_number',None)
         if CustomUser.objects.filter(email=email).exists():
             raise serializers.ValidationError({'email':('email already exists')})
@@ -81,11 +79,12 @@ class PharmacistRegistrationSerializer(serializers.ModelSerializer):
         return CustomUser.objects.create_user(**validated_data)
     
 
+# Login serializer
+
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=250, min_length=6)
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
     tokens = serializers.CharField(read_only=True)
-    
     
     class Meta:
         model = CustomUser
