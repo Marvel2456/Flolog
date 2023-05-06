@@ -103,7 +103,8 @@ class Plan(models.Model):
         return self.name
     
     
-
+#  tell the project manager that all of the medication details should be in one form
+#  remember to do signup with google and google recaptcha
 
 
 # class OrderMedication(models.Model):
