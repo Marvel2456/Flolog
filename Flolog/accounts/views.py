@@ -96,12 +96,12 @@ class ClientUpdateProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        client_profile = request.user.client_profile
+        client_profile = ClientProfile.objects.get(user=request.user)
         serializer = ClientProfileSerializer(client_profile)
         return Response(serializer.data)
 
     def put(self, request, format=None):
-        client_profile = request.user.client_profile
+        client_profile = ClientProfile.objects.get(user=request.user)
         serializer = ClientProfileSerializer(client_profile, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -113,12 +113,12 @@ class PharmaUpdateProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        pharma_profile = request.user.pharma_profile
+        pharma_profile = PharmacistProfile.objects.get(user=request.user)
         serializer = PharmacistProfileSerializer(pharma_profile)
         return Response(serializer.data)
 
     def put(self, request, format=None):
-        pharma_profile = request.user.pharma_profile
+        pharma_profile = PharmacistProfile.objects.get(user=request.user)
         serializer = PharmacistProfileSerializer(pharma_profile, data=request.data)
         if serializer.is_valid():
             serializer.save()
