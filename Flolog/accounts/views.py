@@ -2,10 +2,11 @@ from django.shortcuts import render
 from .serializers import *
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .models import CustomUser, ClientProfile
+from .models import CustomUser, ClientProfile, PharmacistProfile, Plan
 from rest_framework.decorators import api_view
 from .emails import send_otp
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 # Create your views here.
 
@@ -50,7 +51,7 @@ class ClientVerifyView(APIView):
             user.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
             
-        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 
@@ -73,7 +74,6 @@ class PharmacistRegisterView(generics.GenericAPIView):
     
     
 class LoginAPIView(generics.GenericAPIView):
-    
     serializer_class = LoginSerializer
     
     def post(self, request):
@@ -89,3 +89,39 @@ def client_profile_list(request):
     profile = ClientProfile.objects.all()
     serializer = ClientSerializer(profile, many=True)
     return Response(serializer.data)
+
+
+class ClientUpdateProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        client_profile = request.user.client_profile
+        serializer = ClientProfileSerializer(client_profile)
+        return Response(serializer.data)
+
+    def put(self, request, format=None):
+        client_profile = request.user.client_profile
+        serializer = ClientProfileSerializer(client_profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class PharmaUpdateProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        pharma_profile = request.user.pharma_profile
+        serializer = PharmacistProfileSerializer(pharma_profile)
+        return Response(serializer.data)
+
+    def put(self, request, format=None):
+        pharma_profile = request.user.pharma_profile
+        serializer = PharmacistProfileSerializer(pharma_profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, ClientProfile
+from .models import CustomUser, ClientProfile, PharmacistProfile, Plan
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 
@@ -107,8 +107,19 @@ class LoginSerializer(serializers.ModelSerializer):
         }
 
     
-class ClientSerializer(serializers.ModelSerializer):
-    
+class ClientSerializer(serializers.ModelSerializer): 
     class Meta:
         model = ClientProfile
         fields = '__all__'
+
+
+class ClientProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClientProfile
+        fields = ['email', 'first_name', 'last_name', 'phone_number', 'country', 'state', 'city',]
+
+class PharmacistProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PharmacistProfile
+        fields = ['email', 'first_name', 'last_name', 'phone_number',]
+        
