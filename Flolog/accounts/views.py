@@ -3,7 +3,7 @@ from .serializers import *
 from rest_framework import generics, status
 from rest_framework.response import Response
 from .models import CustomUser, ClientProfile, PharmacistProfile, Plan
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from .emails import send_otp
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -85,6 +85,7 @@ class LoginAPIView(generics.GenericAPIView):
     
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def client_profile_list(request):
     profile = ClientProfile.objects.all()
     serializer = ClientSerializer(profile, many=True)
