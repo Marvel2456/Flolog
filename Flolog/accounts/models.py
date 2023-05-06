@@ -66,6 +66,7 @@ class ClientProfile(models.Model):
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
     phone_number = models.IntegerField(blank=True, null=True)
+    coin = models.PositiveIntegerField(default=1, blank=True)
     country = models.CharField(max_length=250, blank=True, null=True)
     state = models.CharField(max_length=250, blank=True, null=True)
     city = models.CharField(max_length=250, blank=True, null=True)
