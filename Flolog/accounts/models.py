@@ -106,17 +106,4 @@ class Plan(models.Model):
 #  tell the project manager that all of the medication details should be in one form
 #  remember to do signup with google and google recaptcha
 
-
-# class OrderMedication(models.Model):
-#     owner = models.ForeignKey(ClientProfile, on_delete=models.CASCADE)
-#     generic_name = models.CharField(max_length=250, blank=True, null=True)
-#     brand_name = models.CharField(max_length=250, blank=True, null=True)
-#     dosage = models.CharField(max_length=100, blank=True, null=True)
-#     dose_strength = models.CharField(max_length=150, blank=True, null=True)
-#     upload_prescription = models.FileField(upload_to='image/prescription', blank=True, null=True)
-#     extra_info = models.TextField()
-#     created = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return self.owner.email
     
