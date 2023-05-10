@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
-from .views import ClientRegisterView, LoginAPIView, PharmacistRegisterView, ClientVerifyView, PharmaUpdateProfileView, ClientUpdateProfileView
+from .views import ClientRegisterView, LoginAPIView, PharmacistRegisterView, ClientVerifyView, ClientDetailView, PharmaUpdateProfileView, ClientUpdateProfileView
 from . import views
 
 
@@ -15,4 +15,5 @@ urlpatterns = [
     path('verify/', ClientVerifyView.as_view(), name="verify" ),
     path('update_client_profile/', ClientUpdateProfileView.as_view(), name="update_client_profile" ),
     path('update_pharma_profile/', PharmaUpdateProfileView.as_view(), name="update_pharma_profile" ),
+    path('client_details/<str:uuid>/', ClientDetailView.as_view(), name="client_details" ),
 ]
