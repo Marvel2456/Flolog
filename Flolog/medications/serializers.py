@@ -4,11 +4,13 @@ from accounts.serializers import ClientProfileSerializer
 
 
 class AdminMedicationSerializer(serializers.ModelSerializer):
+    owner = ClientProfileSerializer(many=False, read_only=True)
     class Meta:
         model = Medication
         fields = ['owner', 'generic_name', 'brand_name', 'dosage_form', 'dose_strength', 'extra_info', 'upload_prescription',]
 
 class AdminOrderSerializer(serializers.ModelSerializer):
+    owner = ClientProfileSerializer(many=False, read_only=True)
     class Meta:
         model = Order
         fields = ['owner', 'medication', 'recipent_name', 'recipent_phone_number', 'recipent_address', 'state', 'city', 'status',]

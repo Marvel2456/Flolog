@@ -8,7 +8,7 @@ import uuid
 
 class Medication(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(ClientProfile, on_delete=models.CASCADE)
+    owner = models.ForeignKey(ClientProfile, on_delete=models.CASCADE, related_name='owner')
     generic_name = models.CharField(max_length=250, blank=True, null=True)
     brand_name = models.CharField(max_length=250, blank=True, null=True)
 
