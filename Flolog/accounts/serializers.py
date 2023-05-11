@@ -122,4 +122,13 @@ class PharmacistProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = PharmacistProfile
         fields = ['email', 'first_name', 'last_name', 'phone_number',]
+
+class ChangePasswordSerializer(serializers.Serializer):
+    model = CustomUser
+
+    """
+    Serializer for password change endpoint.
+    """
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
         
