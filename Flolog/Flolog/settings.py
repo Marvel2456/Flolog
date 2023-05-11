@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'medications.apps.MedicationsConfig',
     'django_rest_passwordreset',
+    'biodata.apps.BiodataConfig',
 ]
 
 MIDDLEWARE = [
