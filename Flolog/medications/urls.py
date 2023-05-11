@@ -14,4 +14,5 @@ urlpatterns = [
     path("medication_details/<str:uuid>/", MedicationDetailView.as_view(), name="medication_details"),
     path("admin_order_details/<str:uuid>/", AdminOrderDetailView.as_view(), name="admin_order_details"),
     path("admin_medication_details/<str:uuid>/", AdminMedicationDetailView.as_view(), name="admin_medication_details"),
+    
 ]

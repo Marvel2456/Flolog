@@ -1,6 +1,9 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import CustomUser, ClientProfile, PharmacistProfile
+from django_rest_passwordreset.signals import reset_password_token_created
+from django.core.mail import send_mail
+from django.urls import reverse
 
 
 @receiver(post_save, sender=CustomUser)
@@ -60,3 +63,20 @@ def update_pharma_user(sender, instance, created, **kwargs):
         user.last_name = pharma_profile.last_name
         user.phone_number = pharma_profile.phone_number
         user.save()
+
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+
+    email_plaintext_message = "{}?token={}".format(reverse('password_reset:reset-password-request'), reset_password_token.key)
+
+    send_mail(
+        # title:
+        "Password Reset for {title}".format(title="Some website title"),
+        # message:
+        email_plaintext_message,
+        # from:
+        "[email protected]",
+        # to:
+        [reset_password_token.user.email]
+    )
