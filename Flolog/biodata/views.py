@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from accounts.models import ClientProfile
 from django.http import Http404
+from accounts.decorators import for_pharmacist
 
 # Create your views here.
 
