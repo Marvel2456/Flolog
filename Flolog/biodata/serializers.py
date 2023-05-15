@@ -31,24 +31,24 @@ class FamilyHistorySerializer(serializers.ModelSerializer):
 
 
 class AdminMedicalRecordSerializer(serializers.ModelSerializer):
-    owner = ClientProfileSerializer()
+    owner = ClientProfileSerializer(read_only=True)
     class Meta:
         model = MedicalRecord
-        fields = ['owner', 'sex', 'age', 'weight', 'height', 'blood_group', 'genotype',]
+        fields = ['id', 'owner', 'sex', 'age', 'weight', 'height', 'blood_group', 'genotype',]
 
 
 class AdminAllergySerialier(serializers.ModelSerializer):
     owner = ClientProfileSerializer()
     class Meta:
         model = Allergy
-        fields = ['owner', 'allergy_name', 'symptom',]
+        fields = ['id', 'owner', 'allergy_name', 'symptom',]
 
 
 class AdminMedicalHistorySerializer(serializers.ModelSerializer):
     owner = ClientProfileSerializer()
     class Meta:
         model = MedicalHistory
-        fields = ['owner', 'medical_history_name',]
+        fields = ['id', 'owner', 'medical_history_name',]
 
 
 class AdminFamilyHistorySerializer(serializers.ModelSerializer):

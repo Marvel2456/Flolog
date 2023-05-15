@@ -31,34 +31,8 @@ class ClientRegisterView(generics.GenericAPIView):
         
         return Response(user_data, status=status.HTTP_201_CREATED)
     
-    
-#  Verify the client via OTP
 
-class ClientVerifyView(APIView):
-    def post(self, request, format=None):
-        serializer = ClientVerifySerializer(data=request.data)
-        if serializer.is_valid():
-            email = serializer.data['email']
-            otp = serializer.data['otp']
-            
-            user = CustomUser.objects.filter(email=email)
-            if not user.exists():
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                
-            if user[0].otp != otp:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
-            user = user.first()    
-            user.is_verified = True
-            user.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-            
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-
-# Pharmacist registration view
-
+# Pharmacist registration view 
 class PharmacistRegisterView(generics.GenericAPIView):
     # permission_classes = [IsAdminUser]
     serializer_class = PharmacistRegistrationSerializer
@@ -85,6 +59,31 @@ class LoginAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+       
+#  Verify the client via OTP
+
+class ClientVerifyView(APIView):
+    def post(self, request, format=None):
+        serializer = ClientVerifySerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.data['email']
+            otp = serializer.data['otp']
+            
+            user = CustomUser.objects.filter(email=email)
+            if not user.exists():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+            if user[0].otp != otp:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = user.first()    
+            user.is_verified = True
+            user.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 
 @api_view(['GET'])

@@ -57,7 +57,7 @@ class PharmacistRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'first_name', 'last_name', 'phone_number',]
+        fields = ['email', 'first_name', 'last_name', 'phone_number', 'password',]
         extra_kwargs = {
             'password': {'write_only':True}   
         }
@@ -105,11 +105,16 @@ class LoginSerializer(serializers.ModelSerializer):
             'email': user.email,
             'tokens' : user.tokens
         }
-
+    
     
 class ClientSerializer(serializers.ModelSerializer): 
     class Meta:
         model = ClientProfile
+        fields = '__all__'
+
+class PharmacistSerializer(serializers.ModelSerializer): 
+    class Meta:
+        model = PharmacistProfile
         fields = '__all__'
 
 

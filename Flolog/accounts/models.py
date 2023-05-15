@@ -87,6 +87,7 @@ class PharmacistProfile(models.Model):
     last_name = models.CharField(max_length=250)
     phone_number = models.IntegerField(blank=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    is_live = models.BooleanField(default=False, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

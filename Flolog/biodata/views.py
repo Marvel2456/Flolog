@@ -31,11 +31,11 @@ class MedicalRecordView(APIView):
 
 class MedicalRecordDetailView(APIView):
     permission_classes = [IsAuthenticated]
+    
 
     """
     Retrieve, update or delete a medical records instance.
     """
-    
     def get_object(self, uuid):
         try:
             records = MedicalRecord.objects.get(id=uuid)
@@ -158,7 +158,7 @@ class AllergyDetailView(APIView):
 
 
 class FamilyHistoryView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, formant=None):
         family = FamilyHistory.objects.all()
@@ -174,7 +174,7 @@ class FamilyHistoryView(APIView):
 
    
 class FamilyHistoryDetailView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     """
     Retrieve, update or delete a Medication instance.

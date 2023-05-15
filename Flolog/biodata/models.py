@@ -13,7 +13,7 @@ class MedicalRecord(models.Model):
     sex = models.CharField(max_length=20, choices=Sex_choice, default="Male", blank=True, null=True)
     age = models.PositiveIntegerField(blank=True, null=True)
     weight = models.PositiveIntegerField(blank=True, null=True)
-    height = models.PositiveIntegerField(blank=True, null=True)
+    height = models.DecimalField(decimal_places=2, max_digits=6, blank=True, null=True)
     Blood_Group_Chpice = (
         ('O', 'O'),
         ('A', 'A'),
@@ -52,6 +52,9 @@ class MedicalHistory(models.Model):
     owner = models.ForeignKey(ClientProfile, on_delete=models.PROTECT, blank=True, null=True)
     medical_history_name = models.CharField(max_length=200, blank=True, null=True)
 
+    class Meta:
+        verbose_name_plural = "medical histories"
+
     def __str__(self):
         return self.owner.email
 
@@ -61,6 +64,9 @@ class FamilyHistory(models.Model):
     relationship = models.CharField(max_length=200, blank=True, null=True)
     details = models.CharField(max_length=250, blank=True, null=True)
     risk_factor = models.CharField(max_length=200, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "family histories"
 
     def __str__(self):
         return self.owner.email
