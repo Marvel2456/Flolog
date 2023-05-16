@@ -8,19 +8,21 @@ from django.urls import reverse
 
 @receiver(post_save, sender=CustomUser)
 def create_portfolio(sender, instance, created, **kwargs):
-
-    if created and CustomUser.objects.filter(is_client=True):
+    client = CustomUser.objects.filter(is_client=True)
+    if created:
+        
         user = instance
-        profile = ClientProfile.objects.create(
-            user = user,
-            email = user.email,
-            first_name = user.first_name,
-            last_name = user.last_name,
-            phone_number = user.phone_number,
-            country = user.country,
-            state = user.state,
-            city = user.city,
-        )
+        if instance.is_client:
+            client_profile = ClientProfile.objects.create(
+                user = user,
+                email = user.email,
+                first_name = user.first_name,
+                last_name = user.last_name,
+                phone_number = user.phone_number,
+                country = user.country,
+                state = user.state,
+                city = user.city,
+            )
 
 @receiver(post_save, sender=ClientProfile)
 def update_user(sender, instance, created, **kwargs):
@@ -42,15 +44,16 @@ def update_user(sender, instance, created, **kwargs):
 @receiver(post_save, sender=CustomUser)
 def create_pharma_portfolio(sender, instance, created, **kwargs):
 
-    if created and CustomUser.objects.filter(is_pharmacist=True):
+    if created:
         user = instance
-        profile = PharmacistProfile.objects.create(
-            user = user,
-            email = user.email,
-            first_name = user.first_name,
-            last_name = user.last_name,
-            phone_number = user.phone_number,
-        )
+        if instance.is_pharmacist:
+            pharma_profile = PharmacistProfile.objects.create(
+                user = user,
+                email = user.email,
+                first_name = user.first_name,
+                last_name = user.last_name,
+                phone_number = user.phone_number,
+            )
 
 @receiver(post_save, sender=PharmacistProfile)
 def update_pharma_user(sender, instance, created, **kwargs):
