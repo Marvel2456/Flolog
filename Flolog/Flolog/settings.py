@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'medications.apps.MedicationsConfig',
     'django_rest_passwordreset',
     'biodata.apps.BiodataConfig',
+    'channels',
+    'chat.apps.ChatConfig',
 ]
 
 MIDDLEWARE = [

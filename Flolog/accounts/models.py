@@ -60,7 +60,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
 #  Client profile.
 
-class ClientProfile(models.Model):
+class Client(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     email = models.EmailField(max_length=250, unique=True)
     first_name = models.CharField(max_length=250)
@@ -80,24 +80,35 @@ class ClientProfile(models.Model):
 
 # Pharmacist profile. 
 
-class PharmacistProfile(models.Model):
+class Pharmacist(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     email = models.EmailField(max_length=250, unique=True)
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
     phone_number = models.IntegerField(blank=True, null=True)
-    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    balance = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
     is_live = models.BooleanField(default=False, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.email
+    
+
+class Wallet(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    owner = models.OneToOneField(Pharmacist, on_delete=models.CASCADE)
+    balance = models.DecimalField(decimal_places=3, max_digits=12, default=0, blank=True, null=True)
+    
+    def __str__(self):
+        return self.owner
+    
 
 
 class Plan(models.Model):
     name = models.CharField(max_length=200, blank=True, null=True)
     price = models.DecimalField(max_digits=20, decimal_places=3, blank=True, null=True)
-    coin_value = models.IntegerField(blank=True, null=True)
+    coin = models.PositiveIntegerField(blank=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
 
     def __str__(self):

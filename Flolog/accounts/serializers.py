@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, ClientProfile, PharmacistProfile, Plan
+from .models import CustomUser, Client, Pharmacist, Plan
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 
@@ -107,26 +107,31 @@ class LoginSerializer(serializers.ModelSerializer):
         }
     
     
-class ClientSerializer(serializers.ModelSerializer): 
+class ClientListSerializer(serializers.ModelSerializer): 
     class Meta:
-        model = ClientProfile
+        model = Client
         fields = '__all__'
 
-class PharmacistSerializer(serializers.ModelSerializer): 
+class PharmacistListSerializer(serializers.ModelSerializer): 
     class Meta:
-        model = PharmacistProfile
+        model = Pharmacist
         fields = '__all__'
 
 
-class ClientProfileSerializer(serializers.ModelSerializer):
+class ClientSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ClientProfile
+        model = Client
         fields = ['email', 'first_name', 'last_name', 'phone_number', 'country', 'state', 'city',]
 
-class PharmacistProfileSerializer(serializers.ModelSerializer):
+class PharmacistSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PharmacistProfile
+        model = Pharmacist
         fields = ['email', 'first_name', 'last_name', 'phone_number',]
+
+class GoLiveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pharmacist
+        fields = ['is_live',]
 
 class ChangePasswordSerializer(serializers.Serializer):
     model = CustomUser

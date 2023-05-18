@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .serializers import *
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .models import CustomUser, ClientProfile, PharmacistProfile, Plan
+from .models import CustomUser, Client, Pharmacist, Plan
 from rest_framework.decorators import api_view, permission_classes
 from .emails import send_otp
 from django.http import Http404
@@ -89,16 +89,16 @@ class ClientVerifyView(APIView):
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def client_profile_list(request):
-    profile = ClientProfile.objects.all()
-    serializer = ClientSerializer(profile, many=True)
+    profile = Client.objects.all()
+    serializer = ClientListSerializer(profile, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def pharmacist_profile_list(request):
-    profile = PharmacistProfile.objects.all()
-    serializer = PharmacistProfileSerializer(profile, many=True)
+    profile = Pharmacist.objects.all()
+    serializer = PharmacistListSerializer(profile, many=True)
     return Response(serializer.data)
 
 
@@ -109,18 +109,18 @@ class ClientDetailView(APIView):
     """
     def get_object(self, uuid):
         try:
-            return ClientProfile.objects.get(id=uuid)
-        except ClientProfile.DoesNotExist:
+            return Client.objects.get(id=uuid)
+        except Client.DoesNotExist:
             raise Http404
 
     def get(self, request, uuid, format=None):
         client = self.get_object(uuid)
-        serializer = ClientSerializer(client)
+        serializer = ClientListSerializer(client)
         return Response(serializer.data)
 
     def put(self, request, uuid, format=None):
         client = self.get_object(uuid)
-        serializer = ClientSerializer(client, data=request.data)
+        serializer = ClientListSerializer(client, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -136,13 +136,13 @@ class ClientUpdateProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        client_profile = ClientProfile.objects.get(user=request.user)
-        serializer = ClientProfileSerializer(client_profile)
+        client = Client.objects.get(user=request.user)
+        serializer = ClientSerializer(client)
         return Response(serializer.data)
 
     def put(self, request, format=None):
-        client_profile = ClientProfile.objects.get(user=request.user)
-        serializer = ClientProfileSerializer(client_profile, data=request.data)
+        client = Client.objects.get(user=request.user)
+        serializer = ClientSerializer(client, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -153,17 +153,34 @@ class PharmaUpdateProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        pharma_profile = PharmacistProfile.objects.get(user=request.user)
-        serializer = PharmacistProfileSerializer(pharma_profile)
+        pharmacist = Pharmacist.objects.get(user=request.user)
+        serializer = PharmacistSerializer(pharmacist)
         return Response(serializer.data)
 
     def put(self, request, format=None):
-        pharma_profile = PharmacistProfile.objects.get(user=request.user)
-        serializer = PharmacistProfileSerializer(pharma_profile, data=request.data)
+        pharmacist = Pharmacist.objects.get(user=request.user)
+        serializer = PharmacistSerializer(pharmacist, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class GoLiveView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        pharmacist = Pharmacist.objects.get(user=request.user)
+        pharmacist.is_live = True
+        pharmacist.save()
+        serializer = GoLiveSerializer(pharmacist)
+        return Response(serializer.data)
+    
+# class PharmacistStatusView(APIView):
+#     permission_classes = [IsAuthenticated]
+#     def get(self, request):
+#         pharmacist = PharmacistProfile.objects.get(user=request.user)
+#         serializer = PharmacistProfileSerializer(pharmacist)
+#         return Response(serializer.data)
 
 
 class ChangePasswordView(generics.UpdateAPIView):
@@ -208,18 +225,18 @@ class PharmacistDetailView(APIView):
     """
     def get_object(self, uuid):
         try:
-            return PharmacistProfile.objects.get(id=uuid)
-        except PharmacistProfile.DoesNotExist:
+            return Pharmacist.objects.get(id=uuid)
+        except Pharmacist.DoesNotExist:
             raise Http404
 
     def get(self, request, uuid, format=None):
         client = self.get_object(uuid)
-        serializer = PharmacistProfileSerializer(client)
+        serializer = PharmacistSerializer(client)
         return Response(serializer.data)
 
     def put(self, request, uuid, format=None):
         client = self.get_object(uuid)
-        serializer = PharmacistProfileSerializer(client, data=request.data)
+        serializer = PharmacistSerializer(client, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

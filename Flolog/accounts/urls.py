@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshVie
 from .views import (ClientRegisterView, PharmacistRegisterView, 
                     ClientVerifyView,ClientDetailView, PharmacistDetailView,
                     PharmaUpdateProfileView, ClientUpdateProfileView, ChangePasswordView,
-                    LoginAPIView)
+                    LoginAPIView, GoLiveView, )
 from . import views
 
 
@@ -19,6 +19,7 @@ urlpatterns = [
     path('verify/', ClientVerifyView.as_view(), name="verify" ),
     path('update_client_profile/', ClientUpdateProfileView.as_view(), name="update_client_profile" ),
     path('update_pharma_profile/', PharmaUpdateProfileView.as_view(), name="update_pharma_profile" ),
+    path('go_live/', GoLiveView.as_view(), name="go_live"),
     path('client_details/<str:uuid>/', ClientDetailView.as_view(), name="client_details" ),
     path('pharma_details/<str:uuid>/', PharmacistDetailView.as_view(), name="pharma_details" ),
     path('change_password/', ChangePasswordView.as_view(), name='change-password'),
