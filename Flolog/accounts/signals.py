@@ -4,6 +4,7 @@ from .models import CustomUser, Client, Pharmacist
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 from django.urls import reverse
+from .utils import generate_referral_code
 
 
 @receiver(post_save, sender=CustomUser)
@@ -23,6 +24,7 @@ def create_portfolio(sender, instance, created, **kwargs):
                 state = user.state,
                 city = user.city,
             )
+            
 
 @receiver(post_save, sender=Client)
 def update_user(sender, instance, created, **kwargs):
@@ -53,6 +55,7 @@ def create_pharma_portfolio(sender, instance, created, **kwargs):
                 first_name = user.first_name,
                 last_name = user.last_name,
                 phone_number = user.phone_number,
+                referral_code = generate_referral_code()
             )
 
 @receiver(post_save, sender=Pharmacist)

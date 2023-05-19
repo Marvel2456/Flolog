@@ -37,6 +37,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     state = models.CharField(max_length=250, blank=True, null=True)
     city = models.CharField(max_length=250, blank=True, null=True)
     otp = models.CharField(max_length=150, blank=True, null=True)
+    # referral_code = models.CharField(max_length=10, unique=True, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -57,9 +58,28 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             'refresh' : str(refresh),
             'access' : str(refresh.access_token)
         } 
-    
-#  Client profile.
 
+# class PharmUser(CustomUser):
+#     pass
+
+# Pharmacist profile. 
+class Pharmacist(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    email = models.EmailField(max_length=250, unique=True)
+    first_name = models.CharField(max_length=250)
+    last_name = models.CharField(max_length=250)
+    phone_number = models.IntegerField(blank=True, null=True)
+    balance = models.PositiveIntegerField(default=0, blank=True, null=True)
+    referral_code = models.CharField(max_length=10, unique=True, blank=True, null=True)
+    is_live = models.BooleanField(default=False, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
+    
+
+#  Client profile.
 class Client(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     email = models.EmailField(max_length=250, unique=True)
@@ -70,38 +90,13 @@ class Client(models.Model):
     country = models.CharField(max_length=250, blank=True, null=True)
     state = models.CharField(max_length=250, blank=True, null=True)
     city = models.CharField(max_length=250, blank=True, null=True)
+    referral_code = models.CharField(max_length=10, unique=True, blank=True, null=True)
+    referred_by = models.ForeignKey(Pharmacist, on_delete=models.SET_NULL, blank=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.email
- 
-
-
-# Pharmacist profile. 
-
-class Pharmacist(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    email = models.EmailField(max_length=250, unique=True)
-    first_name = models.CharField(max_length=250)
-    last_name = models.CharField(max_length=250)
-    phone_number = models.IntegerField(blank=True, null=True)
-    balance = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
-    is_live = models.BooleanField(default=False, blank=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.email
-    
-
-class Wallet(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.OneToOneField(Pharmacist, on_delete=models.CASCADE)
-    balance = models.DecimalField(decimal_places=3, max_digits=12, default=0, blank=True, null=True)
-    
-    def __str__(self):
-        return self.owner
     
 
 

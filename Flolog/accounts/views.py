@@ -8,6 +8,7 @@ from .emails import send_otp
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from .utils import generate_referral_code
 import uuid
 
 # Create your views here.
@@ -19,10 +20,28 @@ class ClientRegisterView(generics.GenericAPIView):
     serializer_class = ClientRegistrationSerializer
     
     def post(self, request):
+        pharma_uuid = request.session.get('ref_profile')
+        print('pharma_uuid', pharma_uuid)
         user = request.data
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        if pharma_uuid is not None:
+            referred_by_pharma = Pharmacist.objects.get(id=pharma_uuid)
+            instance = serializer.save()
+            client = CustomUser.objects.get(id=instance.id)
+            client_profile = Client.objects.get(user=client)
+            client_profile.referred_by = referred_by_pharma
+            client_profile.save()
+
+            # Reward the referred_by_pharma with 100 naira
+            if referred_by_pharma.balance is not None:
+                referred_by_pharma.balance += 100
+            else:
+                referred_by_pharma.balance = 100
+            referred_by_pharma.save()
+        else:
+            serializer.save()
+
         send_otp(serializer.data['email'])
         
         user_data = serializer.data
@@ -174,6 +193,15 @@ class GoLiveView(APIView):
         pharmacist.save()
         serializer = GoLiveSerializer(pharmacist)
         return Response(serializer.data)
+    
+
+class ReferredClientsListAPIView(generics.ListAPIView):
+    serializer_class = ClientSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        pharmacist = self.request.user
+        return Client.objects.filter(referred_by=pharmacist)
     
 # class PharmacistStatusView(APIView):
 #     permission_classes = [IsAuthenticated]

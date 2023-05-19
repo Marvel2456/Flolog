@@ -51,6 +51,10 @@ class ViewChatRequests(APIView):
             chatroom.pharmacist = pharmacist
             chatroom.save()
 
+            # Reward the pharmacist with 500 naira in the wallet
+            pharmacist.balance += 500
+            pharmacist.save()
+
             # Return success response indicating the pharmacist has joined the chatroom
             return Response({"success": "You have joined the chatroom."})
         else:

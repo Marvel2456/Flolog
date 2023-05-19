@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import CustomUser, Client, Pharmacist, Plan
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
+from .utils import generate_referral_code
 
 
 
@@ -54,6 +55,7 @@ class ClientVerifySerializer(serializers.Serializer):
 class PharmacistRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=250)
     phone_number = serializers.IntegerField()
+    # referral_code = serializers.CharField(max_length=10)
 
     class Meta:
         model = CustomUser
@@ -76,6 +78,7 @@ class PharmacistRegistrationSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data['is_pharmacist'] = True
+
         return CustomUser.objects.create_user(**validated_data)
     
 

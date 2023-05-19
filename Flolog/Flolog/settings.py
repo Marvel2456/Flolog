@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'biodata.apps.BiodataConfig',
     'channels',
     'chat.apps.ChatConfig',
+    'pages.apps.PagesConfig',
 ]
 
 MIDDLEWARE = [
