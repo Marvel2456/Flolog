@@ -3,7 +3,8 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshVie
 from .views import (ClientRegisterView, PharmacistRegisterView, 
                     ClientVerifyView,ClientDetailView, PharmacistDetailView,
                     PharmaUpdateProfileView, ClientUpdateProfileView, ChangePasswordView,
-                    LoginAPIView, GoLiveView, ReferredClientsListAPIView)
+                    LoginAPIView, GoLiveView, ReferredClientsListAPIView,
+                    UserActivityView, AdminUserActivityView)
 from . import views
 
 
@@ -27,4 +28,7 @@ urlpatterns = [
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')), 
     # To confirm the paswsword, the endpoint will be /password_reset/confirm/
     path('password_reset/confirm/', include('django_rest_passwordreset.urls', namespace='password_reset_confirm')),
+    # Mnitor User Activity and History
+    path('activity/', UserActivityView.as_view(), name='activity'),
+    path('user_activity/', AdminUserActivityView.as_view(), name='user_activity'),
 ]

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from accounts.models import Client, Pharmacist, CustomUser
 from .models import Chatroom
 from .serializers import ChatroomSerializer
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -24,8 +25,14 @@ class RequestChatView(APIView):
             # Create a new Chatroom instance
             chatroom = Chatroom.objects.create(client=client)
 
+            # Generate the WebSocket URL using the chatroom ID
+            websocket_url = reverse('chat:chatroom', args=[chatroom.id])
+
             serializer = ChatroomSerializer(chatroom)
-            return Response(serializer.data)
+            return Response({
+                'chatroom': serializer.data,
+                'websocket_url': request.build_absolute_uri(websocket_url)
+            })
         else:
             return Response({"error": "Insufficient tokens in the wallet."}, status=400)
         
@@ -50,6 +57,10 @@ class ViewChatRequests(APIView):
         if chatroom.is_active and chatroom.pharmacist is None:
             chatroom.pharmacist = pharmacist
             chatroom.save()
+
+        elif chatroom.is_active and chatroom.pharmacist == pharmacist:
+            # End the chat and close the chatroom
+            chatroom.close_chat()
 
             # Reward the pharmacist with 500 naira in the wallet
             pharmacist.balance += 500

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Client, Pharmacist, Plan
+from .models import CustomUser, Client, Pharmacist, Plan, Activity
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from .utils import generate_referral_code
@@ -144,4 +144,16 @@ class ChangePasswordSerializer(serializers.Serializer):
     """
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = '__all__'
+
+
+class AdminActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = '__all__'
         

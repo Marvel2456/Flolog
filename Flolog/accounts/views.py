@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .utils import generate_referral_code
 import uuid
+from .utils import log_activity
 
 # Create your views here.
 
@@ -76,6 +77,7 @@ class LoginAPIView(generics.GenericAPIView):
         user = request.data
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        log_activity(request.user, 'Logged into the application')
         
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -157,6 +159,7 @@ class ClientUpdateProfileView(APIView):
     def get(self, request, format=None):
         client = Client.objects.get(user=request.user)
         serializer = ClientSerializer(client)
+        log_activity(request.user, 'Viewed Profile')
         return Response(serializer.data)
 
     def put(self, request, format=None):
@@ -164,6 +167,7 @@ class ClientUpdateProfileView(APIView):
         serializer = ClientSerializer(client, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            log_activity(request.user, 'Updated Profile')
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -174,6 +178,7 @@ class PharmaUpdateProfileView(APIView):
     def get(self, request, format=None):
         pharmacist = Pharmacist.objects.get(user=request.user)
         serializer = PharmacistSerializer(pharmacist)
+        log_activity(request.user, 'Viewed Profile')
         return Response(serializer.data)
 
     def put(self, request, format=None):
@@ -181,6 +186,7 @@ class PharmaUpdateProfileView(APIView):
         serializer = PharmacistSerializer(pharmacist, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            log_activity(request.user, 'Updated Profile')
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -192,6 +198,7 @@ class GoLiveView(APIView):
         pharmacist.is_live = True
         pharmacist.save()
         serializer = GoLiveSerializer(pharmacist)
+        log_activity(request.user, 'Went live')
         return Response(serializer.data)
     
 
@@ -240,7 +247,7 @@ class ChangePasswordView(generics.UpdateAPIView):
                 'message': 'Password updated successfully',
                 'data': []
             }
-
+            log_activity(request.user, 'Changed Password')
             return Response(response)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -274,3 +281,19 @@ class PharmacistDetailView(APIView):
         client = self.get_object(uuid)
         client.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class UserActivityView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        activities = Activity.objects.filter(user=request.user)
+        serializer = ActivitySerializer(activities, many=True)
+        return Response(serializer.data)
+    
+
+class AdminUserActivityView(APIView):
+    permission_classes = [IsAdminUser]
+    def get(self, request):
+        activities = Activity.objects.all()
+        serializer = AdminActivitySerializer(activities, many=True)
+        return Response(serializer.data)

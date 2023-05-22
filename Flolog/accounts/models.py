@@ -110,6 +110,20 @@ class Plan(models.Model):
         return self.name
     
     
+class Activity(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    action = models.CharField(max_length=255, blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)   
+
+    class Meta:
+        verbose_name_plural = 'activities'
+        ordering = ['-timestamp']
+
+    def __str__(self) -> str:
+        return f"{self.user.email} - {self.action} - {self.timestamp}"
+
+     
 #  tell the project manager that all of the medication details should be in one form
 #  remember to do signup with google and google recaptcha
 
