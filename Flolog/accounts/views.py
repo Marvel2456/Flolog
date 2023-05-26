@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .serializers import *
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -77,7 +77,10 @@ class LoginAPIView(generics.GenericAPIView):
         user = request.data
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        log_activity(request.user, 'Logged into the application')
+        email = request.data.get('email')
+
+        user = get_object_or_404(CustomUser, email=email)
+        log_activity(user, 'Logged into the application')
         
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -37,7 +37,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     state = models.CharField(max_length=250, blank=True, null=True)
     city = models.CharField(max_length=250, blank=True, null=True)
     otp = models.CharField(max_length=150, blank=True, null=True)
-    # referral_code = models.CharField(max_length=10, unique=True, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)

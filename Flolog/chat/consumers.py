@@ -45,6 +45,28 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     }
                 )
                 return
+            
+        if content != 'end_chat':
+            # Save the message to the database
+            sender_role = 'client' if self.scope['user'].is_client else 'pharmacist'
+
+            message = Message.objects.create(
+                chatroom=chatroom,
+                sender=self.scope['user'],
+                sender_role=sender_role,
+                content=message
+            )
+
+             # Broadcast the chat closing message to the chat group
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'content': content
+                }
+            )
+            return
+
 
         # Broadcast the received message to the chat group
         await self.channel_layer.group_send(
