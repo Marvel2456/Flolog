@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import CustomUser, ClientProfile, PharmacistProfile, Plan
+from .models import CustomUser, Client, Pharmacist, Plan, Activity
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
+from .utils import generate_referral_code
 
 
 
@@ -54,6 +55,7 @@ class ClientVerifySerializer(serializers.Serializer):
 class PharmacistRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=250)
     phone_number = serializers.IntegerField()
+    # referral_code = serializers.CharField(max_length=10)
 
     class Meta:
         model = CustomUser
@@ -76,6 +78,7 @@ class PharmacistRegistrationSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data['is_pharmacist'] = True
+
         return CustomUser.objects.create_user(**validated_data)
     
 
@@ -107,26 +110,31 @@ class LoginSerializer(serializers.ModelSerializer):
         }
     
     
-class ClientSerializer(serializers.ModelSerializer): 
+class ClientListSerializer(serializers.ModelSerializer): 
     class Meta:
-        model = ClientProfile
+        model = Client
         fields = '__all__'
 
-class PharmacistSerializer(serializers.ModelSerializer): 
+class PharmacistListSerializer(serializers.ModelSerializer): 
     class Meta:
-        model = PharmacistProfile
+        model = Pharmacist
         fields = '__all__'
 
 
-class ClientProfileSerializer(serializers.ModelSerializer):
+class ClientSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ClientProfile
+        model = Client
         fields = ['email', 'first_name', 'last_name', 'phone_number', 'country', 'state', 'city',]
 
-class PharmacistProfileSerializer(serializers.ModelSerializer):
+class PharmacistSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PharmacistProfile
+        model = Pharmacist
         fields = ['email', 'first_name', 'last_name', 'phone_number',]
+
+class GoLiveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pharmacist
+        fields = ['is_live',]
 
 class ChangePasswordSerializer(serializers.Serializer):
     model = CustomUser
@@ -136,4 +144,16 @@ class ChangePasswordSerializer(serializers.Serializer):
     """
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = '__all__'
+
+
+class AdminActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = '__all__'
         

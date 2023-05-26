@@ -1,11 +1,11 @@
 from django.db import models
-from accounts.models import ClientProfile
+from accounts.models import Client
 import uuid
 
 # Create your models here.
 class MedicalRecord(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.OneToOneField(ClientProfile, on_delete=models.PROTECT, blank=True, null=True)
+    owner = models.OneToOneField(Client, on_delete=models.PROTECT, blank=True, null=True)
     Sex_choice = (
         ('Male', 'Male'),
         ('Female', 'Female'),
@@ -36,7 +36,7 @@ class MedicalRecord(models.Model):
 
 class Allergy(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(ClientProfile, on_delete=models.PROTECT, blank=True, null=True)
+    owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
     allergy_name = models.CharField(max_length=200, blank=True, null=True)
     symptom = models.TextField(blank=True, null=True)
 
@@ -49,7 +49,7 @@ class Allergy(models.Model):
 
 class MedicalHistory(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(ClientProfile, on_delete=models.PROTECT, blank=True, null=True)
+    owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
     medical_history_name = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
@@ -60,7 +60,7 @@ class MedicalHistory(models.Model):
 
 class FamilyHistory(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(ClientProfile, on_delete=models.PROTECT, blank=True, null=True)
+    owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
     relationship = models.CharField(max_length=200, blank=True, null=True)
     details = models.CharField(max_length=250, blank=True, null=True)
     risk_factor = models.CharField(max_length=200, blank=True, null=True)

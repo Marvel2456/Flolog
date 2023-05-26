@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from datetime import timedelta
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-82ovij8wu8c93w=m!ac91y8dbh5!q8aed8&77b%f84as36=0o9'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,11 +43,17 @@ INSTALLED_APPS = [
     'medications.apps.MedicationsConfig',
     'django_rest_passwordreset',
     'biodata.apps.BiodataConfig',
+    'channels',
+    'chat.apps.ChatConfig',
+    'pages.apps.PagesConfig',
+    'corsheaders',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -74,16 +81,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Flolog.wsgi.application'
 
+ASGI_APPLICATION = "Flolog.asgi.application"
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+
+    'default': dj_database_url.parse(config('EXTERNAL_DATABASE'))
+
 }
+
+
 
 
 # Password validation
@@ -141,6 +160,8 @@ REST_FRAMEWORK = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+
+CORS_ALLOW_ALL_ORIGINS: True
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=5),

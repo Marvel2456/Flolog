@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import ClientProfile
+from accounts.models import Client
 import uuid
 
 # Create your models here.
@@ -8,7 +8,7 @@ import uuid
 
 class Medication(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(ClientProfile, on_delete=models.CASCADE, related_name='owner')
+    owner = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='owner')
     generic_name = models.CharField(max_length=250, blank=True, null=True)
     brand_name = models.CharField(max_length=250, blank=True, null=True)
 
@@ -47,7 +47,7 @@ class Medication(models.Model):
 
 class Order(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(ClientProfile, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Client, on_delete=models.CASCADE)
     medication = models.ForeignKey(Medication, on_delete=models.PROTECT)
     recipent_name = models.CharField(max_length=150, blank=True, null=True)
     recipent_phone_number = models.CharField(max_length=20, blank=True, null=True)

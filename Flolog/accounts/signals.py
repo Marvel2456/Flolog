@@ -1,9 +1,10 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import CustomUser, ClientProfile, PharmacistProfile
+from .models import CustomUser, Client, Pharmacist
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 from django.urls import reverse
+from .utils import generate_referral_code
 
 
 @receiver(post_save, sender=CustomUser)
@@ -13,7 +14,7 @@ def create_portfolio(sender, instance, created, **kwargs):
         
         user = instance
         if instance.is_client:
-            client_profile = ClientProfile.objects.create(
+            client = Client.objects.create(
                 user = user,
                 email = user.email,
                 first_name = user.first_name,
@@ -23,20 +24,21 @@ def create_portfolio(sender, instance, created, **kwargs):
                 state = user.state,
                 city = user.city,
             )
+            
 
-@receiver(post_save, sender=ClientProfile)
+@receiver(post_save, sender=Client)
 def update_user(sender, instance, created, **kwargs):
-    client_profile = instance
-    user = client_profile.user
+    client = instance
+    user = client.user
 
     if created == False:
-        user.email = client_profile.email
-        user.first_name = client_profile.first_name
-        user.last_name = client_profile.last_name
-        user.phone_number = client_profile.phone_number
-        user.country = client_profile.country
-        user.state = client_profile.state
-        user.city = client_profile.city
+        user.email = client.email
+        user.first_name = client.first_name
+        user.last_name = client.last_name
+        user.phone_number = client.phone_number
+        user.country = client.country
+        user.state = client.state
+        user.city = client.city
         user.save()
 
 
@@ -47,24 +49,25 @@ def create_pharma_portfolio(sender, instance, created, **kwargs):
     if created:
         user = instance
         if instance.is_pharmacist:
-            pharma_profile = PharmacistProfile.objects.create(
+            pharmacist = Pharmacist.objects.create(
                 user = user,
                 email = user.email,
                 first_name = user.first_name,
                 last_name = user.last_name,
                 phone_number = user.phone_number,
+                referral_code = generate_referral_code()
             )
 
-@receiver(post_save, sender=PharmacistProfile)
+@receiver(post_save, sender=Pharmacist)
 def update_pharma_user(sender, instance, created, **kwargs):
-    pharma_profile = instance
-    user = pharma_profile.user
+    pharmacist = instance
+    user = pharmacist.user
 
     if created == False:
-        user.email = pharma_profile.email
-        user.first_name = pharma_profile.first_name
-        user.last_name = pharma_profile.last_name
-        user.phone_number = pharma_profile.phone_number
+        user.email = pharmacist.email
+        user.first_name = pharmacist.first_name
+        user.last_name = pharmacist.last_name
+        user.phone_number = pharmacist.phone_number
         user.save()
 
 

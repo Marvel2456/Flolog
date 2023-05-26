@@ -5,9 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from accounts.models import ClientProfile
+from accounts.models import Client
 from django.http import Http404
-from accounts.decorators import for_pharmacist
 
 # Create your views here.
 
@@ -15,13 +14,13 @@ class MedicalRecordView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        owner = ClientProfile.objects.get(user=request.user)
+        owner = Client.objects.get(user=request.user)
         records = MedicalRecord.objects.filter(owner=owner)
         serializer = MedicalRecordSerializer(records, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        owner = ClientProfile.objects.get(user=request.user)
+        owner = Client.objects.get(user=request.user)
         serializer = MedicalRecordSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=owner)
@@ -63,13 +62,13 @@ class MedicalHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        owner = ClientProfile.objects.get(user=request.user)
+        owner = Client.objects.get(user=request.user)
         med_history = MedicalHistory.objects.filter(owner=owner)
         serializer = MedicalHistorySerializer(med_history, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        owner = ClientProfile.objects.get(user=request.user)
+        owner = Client.objects.get(user=request.user)
         serializer = MedicalHistorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=owner)
@@ -112,13 +111,13 @@ class AllergyView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        owner = ClientProfile.objects.get(user=request.user)
+        owner = Client.objects.get(user=request.user)
         allergy = Allergy.objects.filter(owner=owner)
         serializer = AllergySerialier(allergy, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        owner = ClientProfile.objects.get(user=request.user)
+        owner = Client.objects.get(user=request.user)
         serializer = AllergySerialier(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=owner)
@@ -161,14 +160,16 @@ class FamilyHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, formant=None):
-        family = FamilyHistory.objects.all()
+        owner = Client.objects.get(user=request.user)
+        family = FamilyHistory.objects.filter(owner=owner)
         serializer = FamilyHistorySerializer(family, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
+        owner = Client.objects.get(user=request.user)
         serializer = FamilyHistorySerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(owner=owner)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
