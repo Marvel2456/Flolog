@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = 'django-insecure-82ovij8wu8c93w=m!ac91y8dbh5!q8aed8&77b%f84as36=0o9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -98,7 +98,7 @@ import dj_database_url
 
 DATABASES = {
 
-    'default': dj_database_url.parse(config('EXTERNAL_DATABASE'))
+    'default': dj_database_url.parse('postgres://flologdatabase_user:vwPHeuoJvIZ5mFl9A1v9ZBB8gWouB96v@dpg-choadppmbg50piprjhdg-a.ohio-postgres.render.com/flologdatabase')
 
 }
 
