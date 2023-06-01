@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-82ovij8wu8c93w=m!ac91y8dbh5!q8aed8&77b%f84as36=0o9'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'corsheaders',
     'drf_yasg',
+    'social_django',
+
 ]
 
 MIDDLEWARE = [
@@ -87,20 +89,20 @@ ASGI_APPLICATION = "Flolog.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-import dj_database_url
-
 DATABASES = {
-
-    'default': dj_database_url.parse('postgres://flologdatabase_user:vwPHeuoJvIZ5mFl9A1v9ZBB8gWouB96v@dpg-choadppmbg50piprjhdg-a.ohio-postgres.render.com/flologdatabase')
-
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
+# import dj_database_url
+
+# DATABASES = {
+
+#     'default': dj_database_url.parse('postgres://flologdatabase_user:vwPHeuoJvIZ5mFl9A1v9ZBB8gWouB96v@dpg-choadppmbg50piprjhdg-a.ohio-postgres.render.com/flologdatabase')
+
+# }
 
 
 
@@ -124,6 +126,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -202,3 +209,5 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')

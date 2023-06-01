@@ -78,6 +78,20 @@ class Pharmacist(models.Model):
         return self.email
     
 
+
+class CareForm(models.Model):
+    pharmacist = models.ForeignKey(Pharmacist, on_delete=models.SET_NULL, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    patient = models.CharField(max_length=250, blank=True, null=True)
+    drug_history = models.TextField(blank=True, null=True)
+    main_diagnosis = models.TextField(blank=True, null=True)
+    intervention_prescription = models.TextField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.pharmacist} - {self.patient} - {self.created}"
+    
+
 #  Client profile.
 class Client(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

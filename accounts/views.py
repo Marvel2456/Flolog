@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .serializers import *
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .models import CustomUser, Client, Pharmacist, Plan
+from .models import CustomUser, Client, Pharmacist, Plan, PaymentHistory, Activity
 from rest_framework.decorators import api_view, permission_classes
 from .emails import send_otp
 from django.http import Http404
@@ -10,7 +10,11 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .utils import generate_referral_code
 import uuid
+from django.conf import settings
+import requests
+import json
 from .utils import log_activity
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -213,12 +217,6 @@ class ReferredClientsListAPIView(generics.ListAPIView):
         pharmacist = self.request.user
         return Client.objects.filter(referred_by=pharmacist)
     
-# class PharmacistStatusView(APIView):
-#     permission_classes = [IsAuthenticated]
-#     def get(self, request):
-#         pharmacist = PharmacistProfile.objects.get(user=request.user)
-#         serializer = PharmacistProfileSerializer(pharmacist)
-#         return Response(serializer.data)
 
 
 class ChangePasswordView(generics.UpdateAPIView):
@@ -268,15 +266,16 @@ class PharmacistDetailView(APIView):
             raise Http404
 
     def get(self, request, uuid, format=None):
-        client = self.get_object(uuid)
-        serializer = PharmacistSerializer(client)
+        pharmacist = self.get_object(uuid)
+        serializer = PharmacistSerializer(pharmacist)
         return Response(serializer.data)
 
     def put(self, request, uuid, format=None):
-        client = self.get_object(uuid)
-        serializer = PharmacistSerializer(client, data=request.data)
+        pharmacist = self.get_object(uuid)
+        serializer = PharmacistSerializer(pharmacist, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            log_activity(request.user, f'Edited {pharmacist} profile')
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -300,3 +299,133 @@ class AdminUserActivityView(APIView):
         activities = Activity.objects.all()
         serializer = AdminActivitySerializer(activities, many=True)
         return Response(serializer.data)
+    
+
+class CareFormView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        pharmacist = Pharmacist.objects.get(user=request.user)
+        care_form = CareForm.objects.filter(pharmacist=pharmacist)
+        serializer = CareFormSerializer(care_form, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        care_form = CareForm.objects.all()
+        pharmacist = Pharmacist.objects.get(user=request.user)
+        serializer = CareFormSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(pharmacist=pharmacist)
+            log_activity(request.user, f'created a care form for {care_form.patient}')
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class AdminCareFormView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, format=None):
+        care_form = CareForm.objects.all()
+        serializer = CareFormSerializer(care_form, many=True)
+        return Response(serializer.data)
+    
+
+class AdminDetailCareformView(APIView):
+    permission_classes = [IsAdminUser]
+    """
+    Retrieve, update or delete a client instance.
+    """
+    def get_object(self, uuid):
+        try:
+            return CareForm.objects.get(id=uuid)
+        except CareForm.DoesNotExist:
+            raise Http404
+
+    def get(self, request, uuid, format=None):
+        care_form = self.get_object(uuid)
+        serializer = CareFormSerializer(care_form)
+        return Response(serializer.data)
+
+
+
+    def delete(self, request, uuid, format=None):
+        care_form = self.get_object(uuid)
+        care_form.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+@csrf_exempt    
+@api_view(['POST'])
+def make_payment(request):
+    plan_id = request.data.get('plan_id')
+
+    try:
+        plan = Plan.objects.get(id=plan_id)
+    except Plan.DoesNotExist:
+        return Response({'error': 'Invalid plan ID'}, status=400)
+
+    amount = int(plan.price * 100)  # Convert price to kobo (Paystack uses kobo as the base unit)
+    email = request.user.email
+
+    def initaite_payment(request):
+        paystack_url = 'https://api.paystack.co/transaction/initialize'
+        headers = {
+            'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}',
+            'Content-Type': 'application/json',
+        }
+        data = {
+            'amount': amount,
+            'email': email,
+            'metadata': {
+                'plan_id': str(plan.id),
+            },
+        }
+        response = requests.post(paystack_url, headers=headers, json=data)
+        response_data = response.json()
+
+
+        return Response(response_data)
+    initialized = initaite_payment(request)
+    print(initialized['data']['authorization_url'])
+    amount_new = amount/100
+    instance = PaymentHistory.objects.create(client=email, amount=amount_new, plan=plan, paystack_charge_id=initialized['data']['reference'],
+                                              paystack_access_code=initialized['data']['access_code'])
+    instance.save()
+    return Response(status=status.HTTP_200_OK)
+    
+
+
+@csrf_exempt
+@api_view(['POST'])
+def confirm_payment(request):
+    reference = request.data.get('reference')
+
+    pay = PaymentHistory.objects.filter(paystack_charge_id=reference).exists()
+
+    if pay == False:
+        print('Error')
+    else:
+        payment = PaymentHistory.objects.get(paystack_charge_id=reference)
+
+        def verify_payment(request):
+            paystack_url = f'https://api.paystack.co/transaction/verify/{reference}'
+            headers = {
+                'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}',
+                'Content-Type': 'application/json',
+            }
+            data = {
+                "reference": payment.paystack_charge_id
+            }
+            response = requests.get(paystack_url, json=data, headers=headers)
+            response_data = response.json()
+            return Response(response_data)
+        
+    initialized = verify_payment(request)
+    if initialized['data']['status'] == 'success':
+        PaymentHistory.objects.filter(paystack_charge_id=initialized['data']['reference']).update(paid=True)
+        owner = Client.objects.get(user=request.user)
+        client, created = Client.objects.get_or_create(owner=owner)
+        client.coin += int(payment.amount) // 500  # Assuming 1 coin = 500 naira
+        client.save()
+
+    return Response(status=status.HTTP_201_CREATED)

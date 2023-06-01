@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from accounts.models import Client
 from django.http import Http404
+from accounts.utils import log_activity
 
 # Create your views here.
 

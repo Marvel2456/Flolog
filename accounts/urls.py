@@ -3,8 +3,8 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshVie
 from .views import (ClientRegisterView, PharmacistRegisterView, 
                     ClientVerifyView,ClientDetailView, PharmacistDetailView,
                     PharmaUpdateProfileView, ClientUpdateProfileView, ChangePasswordView,
-                    LoginAPIView, GoLiveView, ReferredClientsListAPIView,
-                    UserActivityView, AdminUserActivityView)
+                    LoginAPIView, GoLiveView, ReferredClientsListAPIView, make_payment, confirm_payment,
+                    UserActivityView, AdminUserActivityView, CareFormView, AdminCareFormView, AdminDetailCareformView)
 from . import views
 
 
@@ -22,6 +22,9 @@ urlpatterns = [
     path('update_pharma_profile/', PharmaUpdateProfileView.as_view(), name="update_pharma_profile" ),
     path('go_live/', GoLiveView.as_view(), name="go_live"),
     path('client_details/<str:uuid>/', ClientDetailView.as_view(), name="client_details" ),
+    path('care_form/', CareFormView.as_view(), name='care_form'),
+    path('admin_care_form/', AdminCareFormView.as_view(), name='admin_care_form'),
+    path('care_form/<str:uuid>/', AdminDetailCareformView.as_view(), name='care_form_detail'),
     path('pharma_details/<str:uuid>/', PharmacistDetailView.as_view(), name="pharma_details" ),
     path('referred_clients/', ReferredClientsListAPIView.as_view(), name='referred_clients'),
     path('change_password/', ChangePasswordView.as_view(), name='change-password'),
@@ -31,4 +34,7 @@ urlpatterns = [
     # Mnitor User Activity and History
     path('activity/', UserActivityView.as_view(), name='activity'),
     path('user_activity/', AdminUserActivityView.as_view(), name='user_activity'),
+    # Payment
+    path('make_payment/', views.make_payment, name='make_payment'),
+    path('verify_payment/', views.confirm_payment, name='verify_payment'),
 ]
