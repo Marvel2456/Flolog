@@ -1,10 +1,6 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
-from .views import (ClientRegisterView, PharmacistRegisterView, 
-                    ClientVerifyView,ClientDetailView, PharmacistDetailView,
-                    PharmaUpdateProfileView, ClientUpdateProfileView, ChangePasswordView,
-                    LoginAPIView, GoLiveView, ReferredClientsListAPIView, make_payment, confirm_payment,
-                    UserActivityView, AdminUserActivityView, CareFormView, AdminCareFormView, AdminDetailCareformView)
+from .views import *
 from . import views
 
 
@@ -36,5 +32,10 @@ urlpatterns = [
     path('user_activity/', AdminUserActivityView.as_view(), name='user_activity'),
     # Payment
     path('make_payment/', views.make_payment, name='make_payment'),
-    path('verify_payment/', views.confirm_payment, name='verify_payment'),
+    path('verify_payment/<str:reference>/', VerifyPayment.as_view(), name='verify_payment'),
+    # Dashboard
+    path('client_dashboard/', ClientDashboardView.as_view(), name='client_dashboard'),
+    path('pharmacist_dashboard/', PharmacistDashboardView.as_view(), name='pharmacist_dashboard'),
+    #  Sign in with google
+    path('google_sigunp/', views.google_auth, name='google_signup'),
 ]

@@ -16,11 +16,54 @@ import json
 from .utils import log_activity
 from django.views.decorators.csrf import csrf_exempt
 
+# Sign Up with Google
+from google.auth import exceptions as google_exceptions
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.http import JsonResponse
+
 # Create your views here.
+
+#  Signup with goole view
+def google_auth(request):
+    client_id = settings.GOOGLE_CLIENT_ID
+    token = request.POST.get('token')
+    
+    try:
+        id_info = id_token.verify_oauth2_token(token, google_requests.Request(), client_id)
+        
+        if id_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise ValueError('Invalid token issuer.')
+            
+        
+        user, created = CustomUser.objects.get_or_create(email=id_info['email'])
+        
+        if created:
+            user.username = id_info['sub']
+            user.is_client = True
+            user.is_google_user = True  # Set is_google_user to True for newly created user
+            user.save()
+        elif not user.is_client:
+            raise ValueError('User is not allowed to sign in with Google.')
+        else:
+            user.is_google_user = True  # Set is_google_user to True for existing user
+            user.save()
+            
+        # Generate JWT token using Simple JWT
+        
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        
+        return JsonResponse({'access_token': access_token})
+        
+    except google_exceptions.GoogleAuthError as e:
+        return JsonResponse({'error': str(e)})
+
+
 
 
 #  client registration view
-
 class ClientRegisterView(generics.GenericAPIView):
     serializer_class = ClientRegistrationSerializer
     
@@ -87,6 +130,24 @@ class LoginAPIView(generics.GenericAPIView):
         log_activity(user, 'Logged into the application')
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class ClientDashboardView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        client = Client.objects.get(owner = request.user)
+        serializer = ClientSerializer(client, many=False)
+        return Response(serializer.data)
+    
+class PharmacistDashboardView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        pharmacist = Pharmacist.objects.get(owner = request.user)
+        serializer = PharmacistSerializer(pharmacist, many=False)
+        return Response(serializer.data)
+
 
        
 #  Verify the client via OTP
@@ -367,65 +428,52 @@ def make_payment(request):
     amount = int(plan.price * 100)  # Convert price to kobo (Paystack uses kobo as the base unit)
     email = request.user.email
 
-    def initaite_payment(request):
-        paystack_url = 'https://api.paystack.co/transaction/initialize'
+    # Create payment on Paystack
+    paystack_url = 'https://api.paystack.co/transaction/initialize'
+    headers = {
+        'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}',
+        'Content-Type': 'application/json',
+    }
+    data = {
+        'amount': amount,
+        'email': email,
+        'metadata': {
+            'plan_id': str(plan.id),
+        },
+    }
+    response = requests.post(paystack_url, headers=headers, json=data)
+    response_data = response.json()
+    if request.method == 'POST':
+        amount_new = amount // 100
+        client = Client.objects.get(email=email)
+        payment = PaymentHistory.objects.create(amount=amount_new, client=client, paystack_charge_id=response_data['data']['reference'], 
+                                                paystack_access_code=response_data['data']['access_code'], plan=plan)
+        payment.save()
+
+    return Response(response_data)
+
+
+class VerifyPayment(APIView):
+
+    def get(self, request, reference):
+        client = Client.objects.get(user=request.user)
+        transaction = PaymentHistory.objects.get(
+        paystack_charge_id=reference, client=client)
+        reference = transaction.paystack_charge_id
+        url = 'https://api.paystack.co/transaction/verify/{}'.format(reference)
+
         headers = {
             'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}',
             'Content-Type': 'application/json',
         }
-        data = {
-            'amount': amount,
-            'email': email,
-            'metadata': {
-                'plan_id': str(plan.id),
-            },
-        }
-        response = requests.post(paystack_url, headers=headers, json=data)
-        response_data = response.json()
-
-
-        return Response(response_data)
-    initialized = initaite_payment(request)
-    print(initialized['data']['authorization_url'])
-    amount_new = amount/100
-    instance = PaymentHistory.objects.create(client=email, amount=amount_new, plan=plan, paystack_charge_id=initialized['data']['reference'],
-                                              paystack_access_code=initialized['data']['access_code'])
-    instance.save()
-    return Response(status=status.HTTP_200_OK)
-    
-
-
-@csrf_exempt
-@api_view(['POST'])
-def confirm_payment(request):
-    reference = request.data.get('reference')
-
-    pay = PaymentHistory.objects.filter(paystack_charge_id=reference).exists()
-
-    if pay == False:
-        print('Error')
-    else:
-        payment = PaymentHistory.objects.get(paystack_charge_id=reference)
-
-        def verify_payment(request):
-            paystack_url = f'https://api.paystack.co/transaction/verify/{reference}'
-            headers = {
-                'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}',
-                'Content-Type': 'application/json',
-            }
-            data = {
-                "reference": payment.paystack_charge_id
-            }
-            response = requests.get(paystack_url, json=data, headers=headers)
-            response_data = response.json()
-            return Response(response_data)
-        
-    initialized = verify_payment(request)
-    if initialized['data']['status'] == 'success':
-        PaymentHistory.objects.filter(paystack_charge_id=initialized['data']['reference']).update(paid=True)
-        owner = Client.objects.get(user=request.user)
-        client, created = Client.objects.get_or_create(owner=owner)
-        client.coin += int(payment.amount) // 500  # Assuming 1 coin = 500 naira
-        client.save()
-
-    return Response(status=status.HTTP_201_CREATED)
+        r = requests.get(url, headers=headers)
+        resp = r.json()
+        if resp['data']['status'] == 'success':
+            amount = resp['data']['amount']
+            amount_new = amount // 100
+            PaymentHistory.objects.filter(paystack_charge_id=reference).update(paid=True,
+                                                                                        amount=amount_new)
+            client.coin += amount_new // 500  # Assuming 1 coin = 500 naira
+            client.save()
+            return Response(resp)
+        return Response(resp)

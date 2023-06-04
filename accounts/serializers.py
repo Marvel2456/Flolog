@@ -124,7 +124,7 @@ class PharmacistListSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ['email', 'first_name', 'last_name', 'phone_number', 'country', 'state', 'city',]
+        fields = ['email', 'first_name', 'last_name', 'phone_number', 'coin', 'country', 'state', 'city',]
 
 class PharmacistSerializer(serializers.ModelSerializer):
     class Meta:

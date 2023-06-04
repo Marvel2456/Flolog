@@ -42,6 +42,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_client = models.BooleanField(default=False)
     is_pharmacist = models.BooleanField(default=False)
+    is_google_user = models.BooleanField(default=False)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
     USERNAME_FIELD = 'email'

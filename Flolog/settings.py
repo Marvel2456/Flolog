@@ -89,20 +89,20 @@ ASGI_APPLICATION = "Flolog.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# import dj_database_url
-
 # DATABASES = {
-
-#     'default': dj_database_url.parse('postgres://flologdatabase_user:vwPHeuoJvIZ5mFl9A1v9ZBB8gWouB96v@dpg-choadppmbg50piprjhdg-a.ohio-postgres.render.com/flologdatabase')
-
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
 # }
+
+import dj_database_url
+
+DATABASES = {
+
+    'default': dj_database_url.parse('postgres://flologdatabase_user:vwPHeuoJvIZ5mFl9A1v9ZBB8gWouB96v@dpg-choadppmbg50piprjhdg-a.ohio-postgres.render.com/flologdatabase')
+
+}
 
 
 
@@ -128,7 +128,8 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
+    'google.auth.backends.GoogleOAuth2',
+    # 'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -210,4 +211,9 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
+#  Paystack API setup
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
+
+# Google Credentials Setup
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET_KEY = config('GOOGLE_CLIENT_SECRET_KEY')
