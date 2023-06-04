@@ -42,6 +42,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_client = models.BooleanField(default=False)
     is_pharmacist = models.BooleanField(default=False)
+    is_google_user = models.BooleanField(default=False)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
     USERNAME_FIELD = 'email'
@@ -58,8 +59,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             'access' : str(refresh.access_token)
         } 
 
-# class PharmUser(CustomUser):
-#     pass
 
 # Pharmacist profile. 
 class Pharmacist(models.Model):
@@ -76,6 +75,19 @@ class Pharmacist(models.Model):
 
     def __str__(self):
         return self.email
+    
+
+class CareForm(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    pharmacist = models.ForeignKey(Pharmacist, on_delete=models.SET_NULL, blank=True, null=True)
+    patient = models.CharField(max_length=250, blank=True, null=True)
+    drug_history = models.TextField(blank=True, null=True)
+    main_diagnosis = models.TextField(blank=True, null=True)
+    intervention_prescription = models.TextField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.pharmacist} - {self.patient} - {self.created}"
     
 
 #  Client profile.
@@ -102,11 +114,26 @@ class Client(models.Model):
 class Plan(models.Model):
     name = models.CharField(max_length=200, blank=True, null=True)
     price = models.DecimalField(max_digits=20, decimal_places=3, blank=True, null=True)
-    coin = models.PositiveIntegerField(blank=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
 
     def __str__(self):
         return self.name
+    
+class PaymentHistory(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, blank=True, null=True)
+    paystack_charge_id = models.CharField(max_length=100, default='', blank=True)
+    paystack_access_code = models.CharField(max_length=100, default='', blank=True)
+    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, blank=True, null=True)
+    amount = models.DecimalField(max_digits=20, decimal_places=3, blank=True, null=True)
+    paid = models.BooleanField(default=False, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'payment histories'
+
+    def __str__(self) -> str:
+        return f'{self.client.email} - {self.plan} - {self.amount} - {self.date}'
     
     
 class Activity(models.Model):

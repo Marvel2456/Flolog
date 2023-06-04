@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Client, Pharmacist, Plan, Activity
+from .models import CustomUser, Client, Pharmacist, Plan, Activity, CareForm
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from .utils import generate_referral_code
@@ -124,7 +124,7 @@ class PharmacistListSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ['email', 'first_name', 'last_name', 'phone_number', 'country', 'state', 'city',]
+        fields = ['email', 'first_name', 'last_name', 'phone_number', 'coin', 'country', 'state', 'city',]
 
 class PharmacistSerializer(serializers.ModelSerializer):
     class Meta:
@@ -157,3 +157,9 @@ class AdminActivitySerializer(serializers.ModelSerializer):
         model = Activity
         fields = '__all__'
         
+
+class CareFormSerializer(serializers.ModelSerializer):
+    pharmacist = PharmacistSerializer(many=False, read_only=True)
+    class Meta:
+        model = CareForm
+        fields = '__all__'
