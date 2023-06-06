@@ -41,13 +41,17 @@ def google_auth(request):
         
         if created:
             user.username = id_info['sub']
+            # Set is_client to True for newly created user
             user.is_client = True
-            user.is_google_user = True  # Set is_google_user to True for newly created user
+            # Set is_google_user to True for newly created user
+            user.is_google_user = True  
+            
             user.save()
         elif not user.is_client:
             raise ValueError('User is not allowed to sign in with Google.')
         else:
-            user.is_google_user = True  # Set is_google_user to True for existing user
+            # Set is_google_user to True for existing user
+            user.is_google_user = True  
             user.save()
             
         # Generate JWT token using Simple JWT
@@ -101,7 +105,7 @@ class ClientRegisterView(generics.GenericAPIView):
 
 # Pharmacist registration view 
 class PharmacistRegisterView(generics.GenericAPIView):
-    # permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser]
     serializer_class = PharmacistRegistrationSerializer
     
     def post(self, request):

@@ -212,8 +212,8 @@ SIMPLE_JWT = {
 }
 
 #  Paystack API setup
-PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
+PAYSTACK_SECRET_KEY = 'sk_test_b18a61ef1c755f5cb1afc6acb8452c848dc3b378'
 
 # Google Credentials Setup
-GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRET_KEY = config('GOOGLE_CLIENT_SECRET_KEY')
+GOOGLE_CLIENT_ID = '321271985448-72o0ghmh9d0clrqdlnkdkjvgtgllhlms.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET_KEY = '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'
