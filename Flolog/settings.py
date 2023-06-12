@@ -9,6 +9,10 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+
+import os
+import json
+
 from datetime import timedelta
 from pathlib import Path
 from decouple import config
@@ -26,7 +30,7 @@ SECRET_KEY = 'django-insecure-82ovij8wu8c93w=m!ac91y8dbh5!q8aed8&77b%f84as36=0o9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['flolog.onrender.com']
 
 
 # Application definition
@@ -89,12 +93,12 @@ ASGI_APPLICATION = "Flolog.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 import dj_database_url
 
@@ -128,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 AUTHENTICATION_BACKENDS = (
-    'google.auth.backends.GoogleOAuth2',
+    # 'google.auth.backends.GoogleOAuth2',
     # 'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
