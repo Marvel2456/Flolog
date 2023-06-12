@@ -88,10 +88,12 @@ class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=250, min_length=6)
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
     tokens = serializers.CharField(read_only=True)
+    is_client = serializers.BooleanField(read_only=True)
+    is_pharmacist = serializers.BooleanField(read_only=True)
     
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'tokens']
+        fields = ['email', 'password', 'tokens', 'is_client', 'is_pharmacist']
         
     def validate(self, attrs):
         email = attrs.get('email', '')
@@ -106,7 +108,9 @@ class LoginSerializer(serializers.ModelSerializer):
         
         return {
             'email': user.email,
-            'tokens' : user.tokens
+            'tokens' : user.tokens,
+            'is_client' : user.is_client,
+            'is_pharmacist' :user.is_pharmacist
         }
     
     

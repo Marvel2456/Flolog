@@ -31,6 +31,7 @@ SECRET_KEY = 'django-insecure-82ovij8wu8c93w=m!ac91y8dbh5!q8aed8&77b%f84as36=0o9
 DEBUG = True
 
 ALLOWED_HOSTS = ['flolog.onrender.com']
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
