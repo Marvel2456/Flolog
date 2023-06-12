@@ -1,3 +1,5 @@
+from collections.abc import Callable, Iterable, Mapping
+from typing import Any
 from django.shortcuts import render, get_object_or_404
 from .serializers import *
 from rest_framework import generics, status
@@ -23,7 +25,10 @@ from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import JsonResponse
 
+
 # Create your views here.
+
+
 
 #  Signup with goole view
 def google_auth(request):
