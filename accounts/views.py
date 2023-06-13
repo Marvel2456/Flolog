@@ -1,6 +1,5 @@
-from collections.abc import Callable, Iterable, Mapping
-from typing import Any
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from .serializers import *
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -17,57 +16,52 @@ import requests
 import json
 from .utils import log_activity
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth import authenticate
 # Sign Up with Google
+from google_auth_oauthlib.flow import Flow
 from google.auth import exceptions as google_exceptions
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.http import JsonResponse
 
 
 # Create your views here.
+# views.py
+
+class GoogleLoginAPIView(generics.GenericAPIView):
+    def get(self, request):
+        flow = Flow.from_client_secrets_file(
+            settings.GOOGLE_OAUTH2_CLIENT_SECRETS_FILE,
+            scopes=['openid', 'email', 'profile'],
+            redirect_uri=request.build_absolute_uri(reverse('google_callback'))
+        )
+        authorization_url, state = flow.authorization_url(
+            access_type='offline',
+            include_granted_scopes='true'
+        )
+        request.session['google_auth_state'] = state
+        return redirect(authorization_url)
+
+class GoogleCallbackAPIView(generics.GenericAPIView):
+    def get(self, request):
+        state = request.session.pop('google_auth_state', None)
+        flow = Flow.from_client_secrets_file(
+            settings.GOOGLE_OAUTH2_CLIENT_SECRETS_FILE,
+            scopes=['openid', 'email', 'profile'],
+            redirect_uri=request.build_absolute_uri(reverse('google_callback'))
+        )
+        flow.fetch_token(authorization_response=request.build_absolute_uri(), state=state)
+        id_token = flow.credentials.id_token
+        user = authenticate(request, id_token=id_token)
+        if user:
+            token = RefreshToken.for_user(user)
+            return Response({'refresh': str(token), 'access': str(token.access_token)})
+        else:
+            return Response({'error': 'Invalid Google ID token'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
 #  Signup with goole view
-def google_auth(request):
-    client_id = settings.GOOGLE_CLIENT_ID
-    token = request.POST.get('token')
-    
-    try:
-        id_info = id_token.verify_oauth2_token(token, google_requests.Request(), client_id)
-        
-        if id_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-            raise ValueError('Invalid token issuer.')
-            
-        
-        user, created = CustomUser.objects.get_or_create(email=id_info['email'])
-        
-        if created:
-            user.username = id_info['sub']
-            # Set is_client to True for newly created user
-            user.is_client = True
-            # Set is_google_user to True for newly created user
-            user.is_google_user = True  
-            
-            user.save()
-        elif not user.is_client:
-            raise ValueError('User is not allowed to sign in with Google.')
-        else:
-            # Set is_google_user to True for existing user
-            user.is_google_user = True  
-            user.save()
-            
-        # Generate JWT token using Simple JWT
-        
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        
-        return JsonResponse({'access_token': access_token})
-        
-    except google_exceptions.GoogleAuthError as e:
-        return JsonResponse({'error': str(e)})
 
 
 
