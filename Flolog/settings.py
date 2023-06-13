@@ -105,7 +105,7 @@ import dj_database_url
 
 DATABASES = {
 
-    'default': dj_database_url.parse('postgres://flologdatabase_user:vwPHeuoJvIZ5mFl9A1v9ZBB8gWouB96v@dpg-choadppmbg50piprjhdg-a.ohio-postgres.render.com/flologdatabase')
+    'default': dj_database_url.parse('postgres://flologdatabase_t16x_user:E7NeDnof2xQTpkpzNy5JQSTTibKDXS5X@dpg-ci41q8iip7vptq4rmbmg-a.ohio-postgres.render.com/flologdatabase_t16x')
 
 }
 
