@@ -135,6 +135,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 AUTHENTICATION_BACKENDS = (
     # 'google.auth.backends.GoogleOAuth2',
     # 'social_core.backends.google.GoogleOAuth2',
+    'Flolog.accounts.google_auth_backend.GoogleAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -222,3 +223,5 @@ PAYSTACK_SECRET_KEY = 'sk_test_b18a61ef1c755f5cb1afc6acb8452c848dc3b378'
 # Google Credentials Setup
 GOOGLE_CLIENT_ID = '321271985448-72o0ghmh9d0clrqdlnkdkjvgtgllhlms.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET_KEY = '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'
+GOOGLE_OAUTH2_CLIENT_SECRETS_FILE = 'accounts/client_secrets.json'
+
