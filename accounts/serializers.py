@@ -10,7 +10,7 @@ class ClientRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=250)
     first_name = serializers.CharField(max_length=250)
     last_name = serializers.CharField(max_length=250)
-    phone_number = serializers.IntegerField()
+    phone_number = serializers.IntegerField(max_length=15)
     country = serializers.CharField(max_length=250)
     state = serializers.CharField(max_length=250)
     city = serializers.CharField(max_length=250)
@@ -54,7 +54,7 @@ class ClientVerifySerializer(serializers.Serializer):
 
 class PharmacistRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=250)
-    phone_number = serializers.IntegerField()
+    phone_number = serializers.IntegerField(max_length=15)
     # referral_code = serializers.CharField(max_length=10)
 
     class Meta:

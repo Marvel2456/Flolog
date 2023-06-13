@@ -101,7 +101,7 @@ class ClientRegisterView(generics.GenericAPIView):
 
 # Pharmacist registration view 
 class PharmacistRegisterView(generics.GenericAPIView):
-    # permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser]
     serializer_class = PharmacistRegistrationSerializer
     
     def post(self, request):
