@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 import json
-
+import dj_database_url
 from datetime import timedelta
 from pathlib import Path
 from decouple import config
