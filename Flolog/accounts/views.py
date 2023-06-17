@@ -17,47 +17,32 @@ import requests
 import json
 from .utils import log_activity
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import AllowAny
+from social_django.utils import load_backend, load_strategy
 
-# Sign Up with Google
-from google_auth_oauthlib.flow import Flow
-from google.auth import exceptions as google_exceptions
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
-from rest_framework_simplejwt.tokens import RefreshToken
+
+
 
 # Create your views here.
 
-#  Signup with goole view
-class GoogleLoginAPIView(generics.GenericAPIView):
-    def get(self, request):
-        flow = Flow.from_client_secrets_file(
-            settings.GOOGLE_OAUTH2_CLIENT_SECRETS_FILE,
-            scopes=['openid', 'email', 'profile'],
-            redirect_uri=request.build_absolute_uri(reverse('google_callback'))
-        )
-        authorization_url, state = flow.authorization_url(
-            access_type='offline',
-            include_granted_scopes='true'
-        )
-        request.session['google_auth_state'] = state
-        return redirect(authorization_url)
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def social_auth(request):
+    strategy = load_strategy(request)
+    backend = load_backend(strategy, 'google-oauth2', reverse('social:complete', args=('google-oauth2',)))
+    
+    # Authenticate the user
+    user = backend.do_auth(request.data.get('access_token'))
 
-class GoogleCallbackAPIView(generics.GenericAPIView):
-    def get(self, request):
-        state = request.session.pop('google_auth_state', None)
-        flow = Flow.from_client_secrets_file(
-            settings.GOOGLE_OAUTH2_CLIENT_SECRETS_FILE,
-            scopes=['openid', 'email', 'profile'],
-            redirect_uri=request.build_absolute_uri(reverse('google_callback'))
-        )
-        flow.fetch_token(authorization_response=request.build_absolute_uri(), state=state)
-        id_token = flow.credentials.id_token
-        user = authenticate(request, id_token=id_token)
-        if user:
-            token = RefreshToken.for_user(user)
-            return Response({'refresh': str(token), 'access': str(token.access_token)})
-        else:
-            return Response({'error': 'Invalid Google ID token'}, status=status.HTTP_400_BAD_REQUEST)
+    if user:
+        user, created = CustomUser.objects.get_or_create(email=request.data.get('email'))
+        user.is_client = True
+        user.is_google_user = True
+        user.save()
+        return Response({'detail': 'Successfully authenticated.'})
+    else:
+        return Response({'detail': 'Authentication failed.'}, status=400)
+
 
 
 

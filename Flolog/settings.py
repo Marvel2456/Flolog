@@ -30,8 +30,8 @@ SECRET_KEY = 'django-insecure-82ovij8wu8c93w=m!ac91y8dbh5!q8aed8&77b%f84as36=0o9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['flolog.onrender.com']
-# ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['flolog.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'oauth2_provider',
+    'social_django',
+    'drf_social_oauth2',
     'rest_framework',
     'accounts.apps.AccountsConfig',
     'medications.apps.MedicationsConfig',
@@ -53,7 +56,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'corsheaders',
     'drf_yasg',
-    'social_django',
+   
 
 ]
 
@@ -66,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'Flolog.urls'
@@ -81,6 +85,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -101,7 +107,7 @@ ASGI_APPLICATION = "Flolog.asgi.application"
 #     }
 # }
 
-import dj_database_url
+# import dj_database_url
 
 DATABASES = {
 
@@ -133,9 +139,8 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 AUTHENTICATION_BACKENDS = (
-    # 'google.auth.backends.GoogleOAuth2',
-    # 'social_core.backends.google.GoogleOAuth2',
-    'Flolog.accounts.google_auth_backend.GoogleAuthBackend',
+    'social_core.backends.google.GoogleOAuth2',
+    # 'drf_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -168,6 +173,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # SimpleJWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ( 
+
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  
+        'drf_social_oauth2.authentication.SocialAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )  
 }
@@ -221,7 +229,11 @@ SIMPLE_JWT = {
 PAYSTACK_SECRET_KEY = 'sk_test_b18a61ef1c755f5cb1afc6acb8452c848dc3b378'
 
 # Google Credentials Setup
-GOOGLE_CLIENT_ID = '321271985448-72o0ghmh9d0clrqdlnkdkjvgtgllhlms.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET_KEY = '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'
-GOOGLE_OAUTH2_CLIENT_SECRETS_FILE = 'accounts/client_secrets.json'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '321271985448-72o0ghmh9d0clrqdlnkdkjvgtgllhlms.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email']
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+    'access_type': 'offline',
+}
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['email']
