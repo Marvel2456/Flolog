@@ -1,6 +1,5 @@
-from collections.abc import Callable, Iterable, Mapping
-from typing import Any
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from .serializers import *
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -17,59 +16,31 @@ import requests
 import json
 from .utils import log_activity
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate
+from rest_framework.permissions import AllowAny
+from social_django.utils import load_backend, load_strategy
 
-# Sign Up with Google
-from google.auth import exceptions as google_exceptions
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.http import JsonResponse
 
 
 # Create your views here.
 
-
-
-#  Signup with goole view
-def google_auth(request):
-    client_id = settings.GOOGLE_CLIENT_ID
-    token = request.POST.get('token')
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def social_auth(request):
+    strategy = load_strategy(request)
+    backend = load_backend(strategy, 'google-oauth2', reverse('social:complete', args=('google-oauth2',)))
     
-    try:
-        id_info = id_token.verify_oauth2_token(token, google_requests.Request(), client_id)
-        
-        if id_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-            raise ValueError('Invalid token issuer.')
-            
-        
-        user, created = CustomUser.objects.get_or_create(email=id_info['email'])
-        
-        if created:
-            user.username = id_info['sub']
-            # Set is_client to True for newly created user
-            user.is_client = True
-            # Set is_google_user to True for newly created user
-            user.is_google_user = True  
-            
-            user.save()
-        elif not user.is_client:
-            raise ValueError('User is not allowed to sign in with Google.')
-        else:
-            # Set is_google_user to True for existing user
-            user.is_google_user = True  
-            user.save()
-            
-        # Generate JWT token using Simple JWT
-        
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        
-        return JsonResponse({'access_token': access_token})
-        
-    except google_exceptions.GoogleAuthError as e:
-        return JsonResponse({'error': str(e)})
+    # Authenticate the user
+    user = backend.do_auth(request.data.get('access_token'))
 
-
+    if user:
+        user, created = CustomUser.objects.get_or_create(email=request.data.get('email'))
+        user.is_client = True
+        user.is_google_user = True
+        user.save()
+        return Response({'detail': 'Successfully authenticated.'})
+    else:
+        return Response({'detail': 'Authentication failed.'}, status=400)
 
 
 #  client registration view

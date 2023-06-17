@@ -36,6 +36,5 @@ urlpatterns = [
     # Dashboard
     path('client_dashboard/', ClientDashboardView.as_view(), name='client_dashboard'),
     path('pharmacist_dashboard/', PharmacistDashboardView.as_view(), name='pharmacist_dashboard'),
-    #  Sign in with google
-    path('google_sigunp/', views.google_auth, name='google_signup'),
+    path('social-auth/', social_auth, name='social-auth'),
 ]
