@@ -30,8 +30,8 @@ SECRET_KEY = 'django-insecure-82ovij8wu8c93w=m!ac91y8dbh5!q8aed8&77b%f84as36=0o9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['flolog.onrender.com']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['flolog.onrender.com']
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'oauth2_provider',
     'social_django',
-    'drf_social_oauth2',
+    # 'drf_social_oauth2',
     'rest_framework',
     'accounts.apps.AccountsConfig',
     'medications.apps.MedicationsConfig',
@@ -175,7 +175,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ( 
 
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  
-        'drf_social_oauth2.authentication.SocialAuthentication',
+        # 'drf_social_oauth2.authentication.SocialAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )  
 }
