@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from django.contrib.auth import get_user_model
+# from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from django.contrib.auth import get_user_model, authenticate, login
 from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -13,12 +13,12 @@ User = get_user_model()
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def social_auth(request):
-    adapter = GoogleOAuth2Adapter(request)
-    provider = adapter.get_provider()
+    # adapter = GoogleOAuth2Adapter(request)
+    # provider = adapter.get_provider()
     token = request.data.get('access_token')
 
     if token:
-        user = adapter.authenticate(request, provider, token)
+        user = authenticate(request, token)
         if user:
             user.is_client = True
             user.is_google_user = True
