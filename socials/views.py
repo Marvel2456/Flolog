@@ -16,10 +16,16 @@ def social_auth(request):
     adapter = GoogleOAuth2Adapter(request)
     provider = adapter.get_provider()
     token = request.data.get('access_token')
+    email = request.data.get('email')
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
 
     if token:
         user = adapter.authenticate(request, provider, token)
         if user:
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
             user.is_client = True
             user.is_google_user = True
             user.save()
