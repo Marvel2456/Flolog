@@ -36,5 +36,5 @@ urlpatterns = [
     # Dashboard
     path('client_dashboard/', ClientDashboardView.as_view(), name='client_dashboard'),
     path('pharmacist_dashboard/', PharmacistDashboardView.as_view(), name='pharmacist_dashboard'),
-    path('social-auth/', social_auth, name='social-auth'),
+    
 ]
