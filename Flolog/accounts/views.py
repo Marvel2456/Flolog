@@ -17,35 +17,9 @@ import requests
 import json
 from .utils import log_activity
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.permissions import AllowAny
-from social_django.utils import load_backend, load_strategy
-
-
 
 
 # Create your views here.
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def social_auth(request):
-    strategy = load_strategy(request)
-    backend = load_backend(strategy, 'google-oauth2', reverse('social:complete', args=('google-oauth2',)))
-    
-    # Authenticate the user
-    user = backend.do_auth(request.data.get('access_token'))
-
-    if user:
-        user, created = CustomUser.objects.get_or_create(email=request.data.get('email'))
-        user.is_client = True
-        user.is_google_user = True
-        user.save()
-        return Response({'detail': 'Successfully authenticated.'})
-    else:
-        return Response({'detail': 'Authentication failed.'}, status=400)
-
-
-
-
 
 #  client registration view
 class ClientRegisterView(generics.GenericAPIView):

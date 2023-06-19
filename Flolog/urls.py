@@ -42,10 +42,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('pages/', include('pages.urls')),
     path('accounts/', include('accounts.urls')),
-    path('accounts/', include('social_django.urls', namespace='social')),
+    # path('accounts/', include('social_django.urls', namespace='social')),
     path('medications/', include('medications.urls')),
     path('biodata/', include('biodata.urls')),
     path('chat/', include('chat.urls')),  
+    path('accounts/', include('allauth.urls')),
+    path('socials/', include('socials.urls')),
 
     # Swagger Documentation
    
