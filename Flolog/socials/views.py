@@ -15,14 +15,24 @@ User = get_user_model()
 def social_auth(request):
     # adapter = GoogleOAuth2Adapter(request)
     # provider = adapter.get_provider()
-    token = request.data.get('access_token')
+    access_token = request.data.get('access_token')
+    email = request.data.get('email')
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
 
-    if token:
-        user = authenticate(request, token)
+    if access_token:
+        user = authenticate(request, backend='allauth.socialaccount.providers.google', access_token=access_token)
         if user:
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
             user.is_client = True
             user.is_google_user = True
             user.save()
+
+        if user is not None:
+            # Log the user in
+            login(request, user)
 
             # Generate the access token
             refresh_token = RefreshToken.for_user(user)
