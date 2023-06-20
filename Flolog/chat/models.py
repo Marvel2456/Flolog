@@ -8,7 +8,7 @@ from django.utils import timezone
 
 class Chatroom(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='chatroom')
     pharmacist = models.ForeignKey(Pharmacist, on_delete=models.CASCADE, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     end_time = models.DateTimeField(null=True, blank=True)
