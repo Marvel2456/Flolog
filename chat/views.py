@@ -26,12 +26,12 @@ class RequestChatView(APIView):
             chatroom = Chatroom.objects.create(client=client)
 
             # Generate the WebSocket URL using the chatroom ID
-            websocket_url = reverse('chat:chatroom', args=[chatroom.id])
+            websocket_url = request.build_absolute_uri(reverse('chat:chatroom', args=[chatroom.id]))
 
             serializer = ChatroomSerializer(chatroom)
             return Response({
                 'chatroom': serializer.data,
-                'websocket_url': request.build_absolute_uri(websocket_url)
+                'websocket_url': websocket_url
             })
         else:
             return Response({"error": "Insufficient tokens in the wallet."}, status=400)

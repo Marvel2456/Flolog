@@ -38,7 +38,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
                 # Broadcast the chat closing message to the chat group
                 await self.channel_layer.group_send(
-                    self.room_group_name,
+                    str(self.chatroom_id),
                     {
                         'type': 'chat_message',
                         'content': 'Chat closed by the pharmacist.'
@@ -59,7 +59,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
              # Broadcast the chat closing message to the chat group
             await self.channel_layer.group_send(
-                self.room_group_name,
+                str(self.chatroom_id),
                 {
                     'type': 'chat_message',
                     'content': content
@@ -70,7 +70,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         # Broadcast the received message to the chat group
         await self.channel_layer.group_send(
-            self.room_group_name,
+            str(self.chatroom_id),
             {
                 'type': 'chat_message',
                 'content': content
