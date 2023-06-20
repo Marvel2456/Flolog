@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 class RequestChatView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def post(self, request):
         client = Client.objects.get(user=request.user)
         client_coin = Client.objects.get(client=client)
 
