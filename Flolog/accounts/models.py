@@ -67,7 +67,7 @@ class Pharmacist(models.Model):
     email = models.EmailField(max_length=250, unique=True)
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
-    phone_number = models.CharField(max_length=100,blank=True, null=True)
+    phone_number = models.CharField(max_length=100, blank=True, null=True)
     balance = models.PositiveIntegerField(default=0, blank=True, null=True)
     referral_code = models.CharField(max_length=10, unique=True, blank=True, null=True)
     is_live = models.BooleanField(default=False, blank=True)

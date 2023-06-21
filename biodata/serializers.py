@@ -3,6 +3,29 @@ from .models import *
 from accounts.serializers import ClientSerializer
 
 
+class AgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Age
+        fields = '__all__'
+
+
+class AllergySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Allergy
+        fields = '__all__'
+
+
+class HistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = History
+        fields = '__all__'
+
+class RiskFactorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RiskFactor
+        fields = '__all__'
+
+
 class MedicalRecordSerializer(serializers.ModelSerializer):
     owner = ClientSerializer(many=False, read_only=True)
     class Meta:
@@ -10,24 +33,24 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
         fields = ['owner', 'sex', 'age', 'weight', 'height', 'blood_group', 'genotype',]
 
 
-class AllergySerialier(serializers.ModelSerializer):
+class PatientAllergySerialier(serializers.ModelSerializer):
     owner = ClientSerializer(many=False, read_only=True)
     class Meta:
         model = Allergy
-        fields = ['owner', 'allergy_name', 'symptom',]
+        fields = ['owner', 'allergy', 'others',]
 
 class MedicalHistorySerializer(serializers.ModelSerializer):
     owner = ClientSerializer(many=False, read_only=True)
     class Meta:
         model = MedicalHistory
-        fields = ['owner', 'medical_history_name',]
+        fields = ['owner', 'history', 'others',]
 
 
 class FamilyHistorySerializer(serializers.ModelSerializer):
     owner = ClientSerializer(many=False, read_only=True)
     class Meta:
         model = FamilyHistory
-        fields = ['owner', 'relationship', 'details', 'risk_factor',]
+        fields = ['owner', 'risk', 'others',]
 
 
 class AdminMedicalRecordSerializer(serializers.ModelSerializer):
@@ -41,21 +64,21 @@ class AdminAllergySerialier(serializers.ModelSerializer):
     owner = ClientSerializer()
     class Meta:
         model = Allergy
-        fields = ['id', 'owner', 'allergy_name', 'symptom',]
+        fields = ['id', 'owner', 'allergy', 'others',]
 
 
 class AdminMedicalHistorySerializer(serializers.ModelSerializer):
     owner = ClientSerializer()
     class Meta:
         model = MedicalHistory
-        fields = ['id', 'owner', 'medical_history_name',]
+        fields = ['id', 'owner', 'history', 'others',]
 
 
 class AdminFamilyHistorySerializer(serializers.ModelSerializer):
     owner = ClientSerializer()
     class Meta:
         model = FamilyHistory
-        fields = ['owner', 'relationship', 'details', 'risk_factor',]
+        fields = ['owner', 'risk', 'others',]
 
 
 

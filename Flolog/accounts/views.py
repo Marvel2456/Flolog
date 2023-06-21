@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django.contrib.auth import authenticate
 from .serializers import *
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -17,6 +16,7 @@ import requests
 import json
 from .utils import log_activity
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate
 
 
 # Create your views here.
