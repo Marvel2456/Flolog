@@ -1,3 +1,5 @@
+from collections.abc import Callable, Iterable, Mapping
+from typing import Any
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import CustomUser, Client, Pharmacist
@@ -5,6 +7,15 @@ from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 from django.urls import reverse
 from .utils import generate_referral_code
+import threading
+
+
+# def send_email_background(subject, message, from_email, recipient_list):
+#     def send_email():
+#         send_mail(subject, message, from_email, recipient_list)
+
+#     thread = threading.Thread(target=send_email)
+#     thread.start()
 
 
 @receiver(post_save, sender=CustomUser)

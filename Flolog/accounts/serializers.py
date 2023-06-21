@@ -108,9 +108,9 @@ class LoginSerializer(serializers.ModelSerializer):
         
         return {
             'email': user.email,
-            'is_client': user.is_client,
-            'is_pharmacist': user.is_pharmacist,
-            'tokens' : user.tokens
+            'tokens' : user.tokens,
+            'is_client' : user.is_client,
+            'is_pharmacist' :user.is_pharmacist
         }
     
     
@@ -128,12 +128,12 @@ class PharmacistListSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ['email', 'first_name', 'last_name', 'phone_number', 'coin', 'country', 'state', 'city', 'referred_by',]
+        fields = ['email', 'first_name', 'last_name', 'phone_number', 'coin', 'country', 'state', 'city',]
 
 class PharmacistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pharmacist
-        fields = ['email', 'first_name', 'last_name', 'balance', 'phone_number', 'referral_code',]
+        fields = ['email', 'first_name', 'last_name', 'phone_number',]
 
 class GoLiveSerializer(serializers.ModelSerializer):
     class Meta:

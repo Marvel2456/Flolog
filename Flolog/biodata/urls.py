@@ -3,10 +3,10 @@ from .views import *
 
 
 urlpatterns = [
-    path('age/', AgeView.as_veiw(), name='age'),
-    path('allergy/', Allergy.as_veiw(), name='allergy'),
-    path('history/', HistoryView.as_veiw(), name='history'),
-    path('risk/', RiskFactorView.as_veiw(), name='risk'),
+    path('age/', AgeView.as_view(), name='age'),
+    path('allergy/', AllergyView.as_view(), name='allergy'),
+    path('history/', HistoryView.as_view(), name='history'),
+    path('risk/', RiskFactorView.as_view(), name='risk'),
     path("record/", MedicalRecordView.as_view(), name="record"),
     path("record_detail/<str:uuid>/", MedicalRecordDetailView.as_view(), name="record_detail"),
     path("patient_history/", MedicalHistoryView.as_view(), name="patient_history"),

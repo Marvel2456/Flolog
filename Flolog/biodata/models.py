@@ -94,7 +94,7 @@ class MedicalHistory(models.Model):
 class FamilyHistory(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
-    risk_history = models.ManyToManyField(RiskFactor, blank=True, null=True)
+    risk = models.ManyToManyField(RiskFactor, blank=True, null=True)
     others = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
