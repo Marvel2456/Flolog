@@ -3,11 +3,15 @@ from .views import *
 
 
 urlpatterns = [
+    path('age/', AgeView.as_veiw(), name='age'),
+    path('allergy/', Allergy.as_veiw(), name='allergy'),
+    path('history/', HistoryView.as_veiw(), name='history'),
+    path('risk/', RiskFactorView.as_veiw(), name='risk'),
     path("record/", MedicalRecordView.as_view(), name="record"),
     path("record_detail/<str:uuid>/", MedicalRecordDetailView.as_view(), name="record_detail"),
-    path("history/", MedicalHistoryView.as_view(), name="history"),
+    path("patient_history/", MedicalHistoryView.as_view(), name="patient_history"),
     path("history_detail/<str:uuid>/", MedicalHistoryDetailView.as_view(), name="history_detail"),
-    path("allergy/", AllergyView.as_view(), name="allergy"),
+    path("pateint_allergy/", PatientAllergyView.as_view(), name="patient_allergy"),
     path("allergy_detail/<str:uuid>/", AllergyDetailView.as_view(), name="allergy_detail"),
     path("family/", FamilyHistoryView.as_view(), name="family"),
     path("family_detail/<str:uuid>/", FamilyHistoryDetailView.as_view(), name="family_detail"),

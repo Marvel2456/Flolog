@@ -3,6 +3,38 @@ from accounts.models import Client
 import uuid
 
 # Create your models here.
+
+class Age(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    age_range = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self) -> str:
+        return self.age_range
+    
+class Allergy(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    name = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self) -> str:
+        return self.name
+    
+class History(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    name = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self) -> str:
+        return self.name
+    
+
+class RiskFactor(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    name = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+
 class MedicalRecord(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     owner = models.OneToOneField(Client, on_delete=models.PROTECT, blank=True, null=True)
@@ -11,7 +43,7 @@ class MedicalRecord(models.Model):
         ('Female', 'Female'),
     )
     sex = models.CharField(max_length=20, choices=Sex_choice, default="Male", blank=True, null=True)
-    age = models.PositiveIntegerField(blank=True, null=True)
+    age = models.ForeignKey(Age, on_delete=models.CASCADE, blank=True, null=True)
     weight = models.PositiveIntegerField(blank=True, null=True)
     height = models.DecimalField(decimal_places=2, max_digits=6, blank=True, null=True)
     Blood_Group_Chpice = (
@@ -34,14 +66,14 @@ class MedicalRecord(models.Model):
         return self.owner.email
     
 
-class Allergy(models.Model):
+class PatientAllergy(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
-    allergy_name = models.CharField(max_length=200, blank=True, null=True)
-    symptom = models.TextField(blank=True, null=True)
+    allergy = models.ManyToManyField(Allergy, blank=True, null=True)
+    others = models.TextField(blank=True, null=True)
 
     class Meta:
-        verbose_name_plural = "allergies"
+        verbose_name_plural = "patient allergies"
 
     def __str__(self):
         return self.owner.email
@@ -50,7 +82,8 @@ class Allergy(models.Model):
 class MedicalHistory(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
-    medical_history_name = models.CharField(max_length=200, blank=True, null=True)
+    history = models.ManyToManyField(History, blank=True, null=True)
+    others = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "medical histories"
@@ -61,9 +94,8 @@ class MedicalHistory(models.Model):
 class FamilyHistory(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
-    relationship = models.CharField(max_length=200, blank=True, null=True)
-    details = models.CharField(max_length=250, blank=True, null=True)
-    risk_factor = models.CharField(max_length=200, blank=True, null=True)
+    risk = models.ManyToManyField(RiskFactor, blank=True, null=True)
+    others = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "family histories"

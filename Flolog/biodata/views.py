@@ -7,9 +7,69 @@ from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from accounts.models import Client
 from django.http import Http404
-from accounts.utils import log_activity
 
 # Create your views here.
+class AgeView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, formant=None):
+        age = Age.objects.all()
+        serializer = AgeSerializer(age, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = AgeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AllergyView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, formant=None):
+        allergy = Allergy.objects.all()
+        serializer = AllergySerializer(allergy, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = AllergySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class HistoryView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, formant=None):
+        history = History.objects.all()
+        serializer = HistorySerializer(history, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = AgeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class RiskFactorView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, formant=None):
+        risk = RiskFactor.objects.all()
+        serializer = RiskFactorSerializer(risk, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = RiskFactorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class MedicalRecordView(APIView):
     permission_classes = [IsAuthenticated]
@@ -108,18 +168,18 @@ class MedicalHistoryDetailView(APIView):
     
 
 
-class AllergyView(APIView):
+class PatientAllergyView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         allergy = Allergy.objects.filter(owner=owner)
-        serializer = AllergySerialier(allergy, many=True)
+        serializer = PatientAllergySerialier(allergy, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
         owner = Client.objects.get(user=request.user)
-        serializer = AllergySerialier(data=request.data)
+        serializer = PatientAllergySerialier(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=owner)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -135,7 +195,7 @@ class AllergyDetailView(APIView):
     
     def get_object(self, uuid):
         try:
-            allergy = Allergy.objects.get(id=uuid)
+            allergy = PatientAllergy.objects.get(id=uuid)
             if allergy.owner.user != self.request.user:
                 raise PermissionError("You are not allowed to access this medication.")
             return allergy
@@ -144,12 +204,12 @@ class AllergyDetailView(APIView):
 
     def get(self, request, uuid, format=None):
         allergy = self.get_object(uuid)
-        serializer = AllergySerialier(allergy)
+        serializer = PatientAllergySerialier(allergy)
         return Response(serializer.data)
 
     def put(self, request, uuid, format=None):
         allergy = self.get_object(uuid)
-        serializer = AllergySerialier(allergy, data=request.data)
+        serializer = PatientAllergySerialier(allergy, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -292,7 +352,7 @@ class AdminAllergyView(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request, formant=None):
-        allergy = Allergy.objects.all()
+        allergy = PatientAllergy.objects.all()
         serializer = AdminAllergySerialier(allergy, many=True)
         return Response(serializer.data)
     
@@ -312,8 +372,8 @@ class AdminAllergyDetailView(APIView):
     """
     def get_object(self, uuid):
         try:
-            return Allergy.objects.get(id=uuid)
-        except Allergy.DoesNotExist:
+            return PatientAllergy.objects.get(id=uuid)
+        except PatientAllergy.DoesNotExist:
             raise Http404
 
     def get(self, request, uuid, format=None):
