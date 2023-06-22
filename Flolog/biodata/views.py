@@ -224,12 +224,14 @@ class AllergyDetailView(APIView):
     """
 
     def get(self, request, format=None):
-        owner = PatientAllergy.objects.get(owner=request.user)
-        serializer = PatientAllergySerialier(owner)
+        owner = Client.objects.get(user=request.user)
+        allergy = PatientAllergy.objects.get(owner=owner)
+        serializer = PatientAllergySerialier(allergy, many=True)
         log_activity(request.user, 'Viewed biodata')
         return Response(serializer.data)
 
     def put(self, request, format=None):
+        # owner = Client.objects.get(user=request.user)
         owner = PatientAllergy.objects.get(owner=request.user)
         serializer = PatientAllergySerialier(owner)
         if serializer.is_valid():
