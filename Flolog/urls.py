@@ -46,7 +46,7 @@ urlpatterns = [
     path('medications/', include('medications.urls')),
     path('biodata/', include('biodata.urls')),
     path('chat/', include('chat.urls')),  
-    path('accounts/', include('allauth.urls')),
+    # path('accounts/', include('allauth.urls')),
     path('socials/', include('socials.urls')),
 
     # Swagger Documentation
