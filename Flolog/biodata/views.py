@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from accounts.models import Client
+from accounts.models import Client, CustomUser
 from django.http import Http404
+from accounts.utils import log_activity
 
 # Create your views here.
 class AgeView(APIView):
@@ -92,31 +93,45 @@ class MedicalRecordView(APIView):
 class MedicalRecordDetailView(APIView):
     permission_classes = [IsAuthenticated]
     
+    def get(self, request, format=None):
+        owner = MedicalRecord.objects.get(owner=request.user)
+        serializer = MedicalRecordSerializer(owner)
+        log_activity(request.user, 'Viewed biodata')
+        return Response(serializer.data)
+
+    def put(self, request, format=None):
+        owner = FamilyHistory.objects.get(owner=request.user)
+        serializer = FamilyHistorySerializer(owner)
+        if serializer.is_valid():
+            serializer.save()
+            log_activity(request.user, 'Updated biodata')
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     """
     Retrieve, update or delete a medical records instance.
     """
-    def get_object(self, uuid):
-        try:
-            records = MedicalRecord.objects.get(id=uuid)
-            if records.owner.user != self.request.user:
-                raise PermissionError("You are not allowed to access this medication.")
-            return records
-        except MedicalRecord.DoesNotExist:
-            raise Http404
+    # def get_object(self, uuid):
+    #     try:
+    #         records = MedicalRecord.objects.get(id=uuid)
+    #         if records.owner.user != self.request.user:
+    #             raise PermissionError("You are not allowed to access this medication.")
+    #         return records
+    #     except MedicalRecord.DoesNotExist:
+    #         raise Http404
 
-    def get(self, request, uuid, format=None):
-        records = self.get_object(uuid)
-        serializer = MedicalRecordSerializer(records)
-        return Response(serializer.data)
+    # def get(self, request, uuid, format=None):
+    #     records = self.get_object(uuid)
+    #     serializer = MedicalRecordSerializer(records)
+    #     return Response(serializer.data)
 
-    def put(self, request, uuid, format=None):
-        records = self.get_object(uuid)
-        serializer = MedicalRecordSerializer(records, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def put(self, request, uuid, format=None):
+    #     records = self.get_object(uuid)
+    #     serializer = MedicalRecordSerializer(records, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class MedicalHistoryView(APIView):
@@ -143,28 +158,43 @@ class MedicalHistoryDetailView(APIView):
     """
     Retrieve, update or delete a medical records instance.
     """
-    
-    def get_object(self, uuid):
-        try:
-            med_history = MedicalHistory.objects.get(id=uuid)
-            if med_history.owner.user != self.request.user:
-                raise PermissionError("You are not allowed to access this medication.")
-            return med_history
-        except MedicalHistory.DoesNotExist:
-            raise Http404
 
-    def get(self, request, uuid, format=None):
-        med_history = self.get_object(uuid)
-        serializer = MedicalHistorySerializer(med_history)
+    def get(self, request, format=None):
+        owner = MedicalHistory.objects.get(owner=request.user)
+        serializer = MedicalHistorySerializer(owner)
+        log_activity(request.user, 'Viewed biodata')
         return Response(serializer.data)
 
-    def put(self, request, uuid, format=None):
-        med_history = self.get_object(uuid)
-        serializer = MedicalHistorySerializer(med_history, data=request.data)
+    def put(self, request, format=None):
+        owner = MedicalHistory.objects.get(owner=request.user)
+        serializer = MedicalHistorySerializer(owner)
         if serializer.is_valid():
             serializer.save()
+            log_activity(request.user, 'Updated biodata')
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # def get_object(self, uuid):
+    #     try:
+    #         med_history = MedicalHistory.objects.get(id=uuid)
+    #         if med_history.owner.user != self.request.user:
+    #             raise PermissionError("You are not allowed to access this medication.")
+    #         return med_history
+    #     except MedicalHistory.DoesNotExist:
+    #         raise Http404
+
+    # def get(self, request, uuid, format=None):
+    #     med_history = self.get_object(uuid)
+    #     serializer = MedicalHistorySerializer(med_history)
+    #     return Response(serializer.data)
+
+    # def put(self, request, uuid, format=None):
+    #     med_history = self.get_object(uuid)
+    #     serializer = MedicalHistorySerializer(med_history, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 
@@ -192,28 +222,43 @@ class AllergyDetailView(APIView):
     """
     Retrieve, update or delete a medical records instance.
     """
-    
-    def get_object(self, uuid):
-        try:
-            allergy = PatientAllergy.objects.get(id=uuid)
-            if allergy.owner.user != self.request.user:
-                raise PermissionError("You are not allowed to access this medication.")
-            return allergy
-        except Allergy.DoesNotExist:
-            raise Http404
 
-    def get(self, request, uuid, format=None):
-        allergy = self.get_object(uuid)
-        serializer = PatientAllergySerialier(allergy)
+    def get(self, request, format=None):
+        owner = PatientAllergy.objects.get(owner=request.user)
+        serializer = PatientAllergySerialier(owner)
+        log_activity(request.user, 'Viewed biodata')
         return Response(serializer.data)
 
-    def put(self, request, uuid, format=None):
-        allergy = self.get_object(uuid)
-        serializer = PatientAllergySerialier(allergy, data=request.data)
+    def put(self, request, format=None):
+        owner = PatientAllergy.objects.get(owner=request.user)
+        serializer = PatientAllergySerialier(owner)
         if serializer.is_valid():
             serializer.save()
+            log_activity(request.user, 'Updated biodata')
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # def get_object(self, uuid):
+    #     try:
+    #         allergy = PatientAllergy.objects.get(id=uuid)
+    #         if allergy.owner.user != self.request.user:
+    #             raise PermissionError("You are not allowed to access this medication.")
+    #         return allergy
+    #     except Allergy.DoesNotExist:
+    #         raise Http404
+
+    # def get(self, request, uuid, format=None):
+    #     allergy = self.get_object(uuid)
+    #     serializer = PatientAllergySerialier(allergy)
+    #     return Response(serializer.data)
+
+    # def put(self, request, uuid, format=None):
+    #     allergy = self.get_object(uuid)
+    #     serializer = PatientAllergySerialier(allergy, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 
@@ -238,28 +283,20 @@ class FamilyHistoryView(APIView):
 class FamilyHistoryDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    """
-    Retrieve, update or delete a Medication instance.
-    """
-    def get_object(self, uuid):
-        try:
-            return FamilyHistory.objects.get(id=uuid)
-        except FamilyHistory.DoesNotExist:
-            raise Http404
-
-    def get(self, request, uuid, format=None):
-        family = self.get_object(uuid)
-        serializer = FamilyHistorySerializer(family)
+    def get(self, request, format=None):
+        owner = FamilyHistory.objects.get(owner=request.user)
+        serializer = FamilyHistorySerializer(owner)
+        log_activity(request.user, 'Viewed biodata')
         return Response(serializer.data)
 
-    def put(self, request, uuid, format=None):
-        family = self.get_object(uuid)
-        serializer = FamilyHistorySerializer(family, data=request.data)
+    def put(self, request, format=None):
+        owner = FamilyHistory.objects.get(owner=request.user)
+        serializer = FamilyHistorySerializer(owner)
         if serializer.is_valid():
             serializer.save()
+            log_activity(request.user, 'Updated biodata')
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     
 
