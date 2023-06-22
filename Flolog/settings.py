@@ -115,7 +115,7 @@ ASGI_APPLICATION = "Flolog.asgi.application"
 
 DATABASES = {
 
-    'default': dj_database_url.parse('postgres://flolog_ua9h_user:8nwQ3XaMU5alaZmHqqpAkq2LBoPPsIEo@dpg-ci9jmhp8g3ne2ekgjdhg-a.ohio-postgres.render.com/flolog_ua9h')
+    'default': dj_database_url.parse('postgres://flolog_778c_user:sZhHtuvomFAS16jtJnVo8R6hhebbLwST@dpg-ci9pmktgkuvusat804pg-a.ohio-postgres.render.com/flolog_778c')
 
 }
 
@@ -244,14 +244,14 @@ PAYSTACK_SECRET_KEY = 'sk_test_b18a61ef1c755f5cb1afc6acb8452c848dc3b378'
 # SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['email']
 
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'METHOD': 'oauth2',
-        'VERIFIED_EMAIL': False,
-        'CLIENT_ID': '321271985448-72o0ghmh9d0clrqdlnkdkjvgtgllhlms.apps.googleusercontent.com',
-        'CLIENT_SECRET': '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',
-        'LOCALE_FUNC': lambda request: 'en',  # Optional: Set the desired locale
-    }
-}
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': ['profile', 'email'],
+#         'AUTH_PARAMS': {'access_type': 'online'},
+#         'METHOD': 'oauth2',
+#         'VERIFIED_EMAIL': False,
+#         'CLIENT_ID': '321271985448-72o0ghmh9d0clrqdlnkdkjvgtgllhlms.apps.googleusercontent.com',
+#         'CLIENT_SECRET': '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',
+#         'LOCALE_FUNC': lambda request: 'en',  # Optional: Set the desired locale
+#     }
+# }
