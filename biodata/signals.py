@@ -16,38 +16,38 @@ def create_medical_record(sender, instance, created, **kwargs):
                 
             )
 
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=Client)
 def create_medical_history(sender, instance, created, **kwargs):
-    # client = CustomUser.objects.filter(is_client=True)
+    client = CustomUser.objects.filter(is_client=True)
     if created:
         
-        user = instance
-        if instance.is_client:
+        client = instance
+        if instance:
             medical_history = MedicalHistory.objects.create(
-                owner = user,
+                owner = client,
                 
             )
 
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=Client)
 def create_patient_allergy(sender, instance, created, **kwargs):
-    # client = CustomUser.objects.filter(is_client=True)
+    client = CustomUser.objects.filter(is_client=True)
     if created:
         
-        user = instance
-        if instance.is_client:
+        client = instance
+        if instance:
             patient_allergy = PatientAllergy.objects.create(
-                owner = user,
+                owner = client,
                 
             )
 
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=Client)
 def create_family_history(sender, instance, created, **kwargs):
-    # client = CustomUser.objects.filter(is_client=True)
+    client = CustomUser.objects.filter(is_client=True)
     if created:
         
-        user = instance
-        if instance.is_client:
+        client = instance
+        if instance:
             family_history = FamilyHistory.objects.create(
-                owner = user,
+                owner = client,
                 
             )
