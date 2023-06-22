@@ -47,12 +47,16 @@ class MedicalRecord(models.Model):
     weight = models.PositiveIntegerField(blank=True, null=True)
     height = models.DecimalField(decimal_places=2, max_digits=6, blank=True, null=True)
     Blood_Group_Chpice = (
-        ('O', 'O'),
-        ('A', 'A'),
-        ('B', 'B'),
-        ('AB', 'AB'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
     )
-    blood_group = models.CharField(max_length=10, choices=Blood_Group_Chpice, default="O", blank=True, null=True)
+    blood_group = models.CharField(max_length=10, choices=Blood_Group_Chpice, default="O+", blank=True, null=True)
     Genotype_Choice = (
         ('AA', 'AA'),
         ('AS', 'AS'),
