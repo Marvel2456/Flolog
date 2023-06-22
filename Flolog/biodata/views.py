@@ -103,7 +103,7 @@ class MedicalRecordDetailView(APIView):
     def put(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         med_record = MedicalRecord.objects.get(owner=owner)
-        serializer = MedicalRecordSerializer(med_record)
+        serializer = MedicalRecordSerializer(med_record, data=request.data)
         if serializer.is_valid():
             serializer.save()
             log_activity(request.user, 'Updated biodata')
@@ -146,7 +146,7 @@ class MedicalHistoryDetailView(APIView):
     def put(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         med_history = MedicalHistory.objects.get(owner=owner)
-        serializer = MedicalHistorySerializer(med_history)
+        serializer = MedicalHistorySerializer(med_history, data=request.data)
         if serializer.is_valid():
             serializer.save()
             log_activity(request.user, 'Updated biodata')
@@ -187,7 +187,7 @@ class AllergyDetailView(APIView):
     def put(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         patient_allergy = PatientAllergy.objects.get(owner=owner)
-        serializer = PatientAllergySerialier(patient_allergy)
+        serializer = PatientAllergySerialier(patient_allergy, data=request.data)
         if serializer.is_valid():
             serializer.save()
             log_activity(request.user, 'Updated biodata')
@@ -227,7 +227,7 @@ class FamilyHistoryDetailView(APIView):
     def put(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         fam_history = FamilyHistory.objects.get(owner=owner)
-        serializer = FamilyHistorySerializer(fam_history)
+        serializer = FamilyHistorySerializer(fam_history, data=request.data)
         if serializer.is_valid():
             serializer.save()
             log_activity(request.user, 'Updated biodata')
