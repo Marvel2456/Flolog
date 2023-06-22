@@ -6,10 +6,23 @@ from django.utils import timezone
 # Create your models here.
 
 
+
+
+# class Message(models.Model):
+#     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
+#     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+#     content = models.TextField()
+#     timestamp = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self) -> str:
+#         return f"{self.sender.email} - {self.timestamp}"
+
+
+
 class Chatroom(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='chatroom')
-    pharmacist = models.ForeignKey(Pharmacist, on_delete=models.CASCADE, null=True, blank=True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
+    pharmacist = models.ForeignKey(Pharmacist, on_delete=models.CASCADE, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     end_time = models.DateTimeField(null=True, blank=True)
 
@@ -20,15 +33,14 @@ class Chatroom(models.Model):
 
     def __str__(self) -> str:
         return f"{self.client} - {self.end_time}"
-
+    
 
 class Message(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
-    chatroom = models.ForeignKey(Chatroom, on_delete=models.CASCADE)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    room = models.ForeignKey(Chatroom, on_delete=models.PROTECT, blank=True, null=True)
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    sender_role = models.CharField(max_length=255, blank=True, null=True)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"{self.chatroom.client} - {self.created_at}"
+        return f"{self.sender.email} - {self.timestamp}"
