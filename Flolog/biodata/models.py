@@ -43,7 +43,7 @@ class MedicalRecord(models.Model):
         ('Female', 'Female'),
     )
     sex = models.CharField(max_length=20, choices=Sex_choice, default="Male", blank=True, null=True)
-    age = models.ForeignKey(Age, on_delete=models.CASCADE, blank=True, null=True)
+    age = models.CharField(max_length=200, blank=True, null=True)
     weight = models.PositiveIntegerField(blank=True, null=True)
     height = models.DecimalField(decimal_places=2, max_digits=6, blank=True, null=True)
     Blood_Group_Chpice = (
