@@ -1,5 +1,3 @@
-from collections.abc import Callable, Iterable, Mapping
-from typing import Any
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import CustomUser, Client, Pharmacist
