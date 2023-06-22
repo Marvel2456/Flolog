@@ -226,7 +226,7 @@ class AllergyDetailView(APIView):
     def get(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         allergy = PatientAllergy.objects.get(owner=owner)
-        serializer = PatientAllergySerialier(allergy, many=True)
+        serializer = PatientAllergySerialier(allergy)
         log_activity(request.user, 'Viewed biodata')
         return Response(serializer.data)
 
