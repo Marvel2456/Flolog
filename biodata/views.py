@@ -203,8 +203,8 @@ class PatientAllergyView(APIView):
 
     def get(self, request, format=None):
         owner = Client.objects.get(user=request.user)
-        allergy = Allergy.objects.filter(owner=owner)
-        serializer = PatientAllergySerialier(allergy, many=True)
+        patient_allergy = Allergy.objects.filter(owner=owner)
+        serializer = PatientAllergySerialier(patient_allergy, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
@@ -225,8 +225,8 @@ class AllergyDetailView(APIView):
 
     def get(self, request, format=None):
         owner = Client.objects.get(user=request.user)
-        allergy = PatientAllergy.objects.get(owner=owner)
-        serializer = PatientAllergySerialier(allergy)
+        patient_allergy = PatientAllergy.objects.get(owner=owner)
+        serializer = PatientAllergySerialier(patient_allergy)
         log_activity(request.user, 'Viewed biodata')
         return Response(serializer.data)
 
