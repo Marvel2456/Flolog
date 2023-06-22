@@ -4,13 +4,13 @@ from accounts.models import CustomUser, Client, Pharmacist
 from .models import MedicalRecord, MedicalHistory, PatientAllergy, FamilyHistory
 
 
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=Client)
 def create_medical_record(sender, instance, created, **kwargs):
     client = CustomUser.objects.filter(is_client=True)
     if created:
         
         client = instance
-        if instance.is_client:
+        if instance:
             medical_record = MedicalRecord.objects.create(
                 owner = client,
                 
