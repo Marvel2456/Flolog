@@ -86,7 +86,8 @@ class MessageCreateView(APIView):
 
             message_data = serializer.data
             message_data['timestamp'] = str(message_data['timestamp'])
-
+            message_data['sender'] = str(message_data['sender'])
+            
             pusher_client.trigger('chat-channel', 'new-message', message_data)
 
             return Response(serializer.data, status=201)
