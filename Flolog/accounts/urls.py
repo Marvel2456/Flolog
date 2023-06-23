@@ -19,6 +19,7 @@ urlpatterns = [
     path('go_live/', GoLiveView.as_view(), name="go_live"),
     path('client_details/<str:uuid>/', ClientDetailView.as_view(), name="client_details" ),
     path('care_form/', CareFormView.as_view(), name='care_form'),
+    path('referral/', PharmacistReferral.as_view(), name='referral'),
     path('admin_care_form/', AdminCareFormView.as_view(), name='admin_care_form'),
     path('care_form/<str:uuid>/', AdminDetailCareformView.as_view(), name='care_form_detail'),
     path('pharma_details/<str:uuid>/', PharmacistDetailView.as_view(), name="pharma_details" ),

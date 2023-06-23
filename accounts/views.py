@@ -204,17 +204,8 @@ class PharmaUpdateProfileView(APIView):
     def get(self, request, format=None):
         pharmacist = Pharmacist.objects.get(user=request.user)
         serializer = PharmacistSerializer(pharmacist)
-        referred_clients = pharmacist.client_set.all()
-        total_count = referred_clients.count()
-
-        serializer = ClientSerializer(referred_clients, many=True)
-
-        response_data = {
-            'referred_clients': serializer.data,
-            'total_count': total_count
-        }
         log_activity(request.user, 'Viewed Profile')
-        return Response(serializer.data, response_data)
+        return Response(serializer.data)
 
     def put(self, request, format=None):
         pharmacist = Pharmacist.objects.get(user=request.user)
@@ -226,12 +217,19 @@ class PharmaUpdateProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def GetRefferedUsers(request):
-#     referred_by = Client.objects.get(referred_by)
-#     referred_by.count()
+class PharmacistReferral(APIView):
+    def get(self, request):
+        pharmacist = Pharmacist.objects.get(user=request.user)
+        referred_clients = pharmacist.client_set.all()
+        total_count = referred_clients.count()
 
+        serializer = ClientSerializer(referred_clients, many=True)
+
+        response_data = {
+            'referred_clients': serializer.data,
+            'total_count': total_count
+        }
+        return Response(response_data)
     
 
 class GoLiveView(APIView):
