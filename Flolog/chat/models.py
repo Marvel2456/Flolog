@@ -7,18 +7,6 @@ from django.utils import timezone
 
 
 
-
-# class Message(models.Model):
-#     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
-#     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-#     content = models.TextField()
-#     timestamp = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self) -> str:
-#         return f"{self.sender.email} - {self.timestamp}"
-
-
-
 class Chatroom(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
