@@ -126,9 +126,21 @@ class PharmacistListSerializer(serializers.ModelSerializer):
 
 
 class ClientSerializer(serializers.ModelSerializer):
+    referred_by = serializers.SerializerMethodField()
+
+    def get_referred_by(self, obj):
+        pharmacist = obj.referred_by
+        if pharmacist:
+            return {
+                'id': pharmacist.id,
+                'email': pharmacist.email,
+                'first_name': pharmacist.first_name,
+                'last_name': pharmacist.last_name
+            }
+        return None
     class Meta:
         model = Client
-        fields = ['email', 'first_name', 'last_name', 'phone_number', 'coin', 'country', 'state', 'city',]
+        fields = ['email', 'first_name', 'last_name', 'phone_number', 'coin', 'country', 'state', 'city', 'referred_by',]
 
 class PharmacistSerializer(serializers.ModelSerializer):
     class Meta:
