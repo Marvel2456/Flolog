@@ -8,19 +8,17 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = '__all__'
 
+class MessageSerializer(serializers.ModelSerializer):
+    sender = CustomUserSerializer(read_only=True)
 
+    class Meta:
+        model = Message
+        fields = '__all__'
 
 class ChatroomSerializer(serializers.ModelSerializer):
-    client = ClientSerializer()
-    pharmacist = PharmacistSerializer()
+    messages = MessageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Chatroom
         fields = '__all__'
 
-class MessageSerializer(serializers.ModelSerializer):
-    sender = CustomUserSerializer()
-
-    class Meta:
-        model = Message
-        fields = '__all__'
