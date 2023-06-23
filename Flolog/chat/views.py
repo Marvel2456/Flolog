@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from accounts.models import Client, Pharmacist, CustomUser
 from .models import Chatroom
-from .serializers import ChatroomSerializer
+from .serializers import ChatroomSerializer, MessageSerializer
 from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from .pusher import pusher_client
 
 # Create your views here.
 
@@ -26,12 +27,12 @@ class RequestChatView(APIView):
             chatroom = Chatroom.objects.create(client=client)
 
             # Generate the WebSocket URL using the chatroom ID
-            websocket_url = request.build_absolute_uri(reverse('chat:chatroom', args=[chatroom.id]))
+            # websocket_url = request.build_absolute_uri(reverse('chat:chatroom', args=[chatroom.id]))
 
             serializer = ChatroomSerializer(chatroom)
             return Response({
                 'chatroom': serializer.data,
-                'websocket_url': websocket_url
+                # 'websocket_url': websocket_url
             })
         else:
             return Response({"error": "Insufficient tokens in the wallet."}, status=400)
@@ -71,5 +72,24 @@ class ViewChatRequests(APIView):
         else:
             # Return error response indicating the chatroom is no longer available
             return Response({"error": "Chatroom is no longer available."}, status=400)
+        
+
+class MessageCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, format=None):
+        serializer = MessageSerializer(data=request.data)
+        if serializer.is_valid():
+            chatroom_id = request.data.get('room')
+            chatroom = Chatroom.objects.get(id=chatroom_id)
+            serializer.save(room=chatroom)
+
+            message_data = serializer.data
+            message_data['timestamp'] = str(message_data['timestamp'])
+
+            pusher_client.trigger('chat-channel', 'new-message', message_data)
+
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
 
