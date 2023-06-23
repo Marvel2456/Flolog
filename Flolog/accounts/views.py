@@ -248,7 +248,7 @@ class ReferredClientsListAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        pharmacist = self.request.user
+        pharmacist = Pharmacist.objects.get(user=self.request.user)
         return Client.objects.filter(referred_by=pharmacist)
     
 
