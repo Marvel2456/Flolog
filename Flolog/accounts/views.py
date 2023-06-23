@@ -17,6 +17,7 @@ import json
 from .utils import log_activity
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # Create your views here.
@@ -88,6 +89,25 @@ class LoginAPIView(generics.GenericAPIView):
         log_activity(user, 'Logged into the application')
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class LogoutAPIView(APIView):
+    permission_classes = (IsAuthenticated, IsAdminUser)
+
+    def post(self, request):
+        try:
+            # Get the refresh token from the request data
+            refresh_token = request.data['refresh_token']
+
+            # Blacklist the refresh token to revoke it
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response({"detail": "Successfully logged out."})
+
+        except Exception as e:
+            return Response({"detail": "Invalid or missing refresh token."}, status=400)
+
     
 
 class ClientDashboardView(APIView):

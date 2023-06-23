@@ -11,6 +11,7 @@ urlpatterns = [
     path('register_client/', ClientRegisterView.as_view(), name="register_client" ),
     path('register_pharma/', PharmacistRegisterView.as_view(), name="register_pharma" ),
     path('login/', LoginAPIView.as_view(), name="login" ),
+    path('logout/', LogoutAPIView.as_view(), name="logout"),
     path('client_profiles/', views.client_profile_list, name='client_profiles'),
     path('pharma_profiles/', views.pharmacist_profile_list, name='pharma_profiles'),
     path('verify/', ClientVerifyView.as_view(), name="verify" ),
