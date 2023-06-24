@@ -16,7 +16,6 @@ class RequestChatView(APIView):
 
     def post(self, request):
         client = Client.objects.get(user=request.user)
-        client_coin = Client.objects.get(client=client)
 
         if client.coin > 0:
             # Deduct 1 token from the client's wallet
