@@ -85,7 +85,9 @@ class PharmacistRegistrationSerializer(serializers.ModelSerializer):
 # Login serializer
 
 class LoginSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
     email = serializers.EmailField(max_length=250, min_length=6)
+    first_name = serializers.CharField(max_length=250, read_only=True)
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
     tokens = serializers.CharField(read_only=True)
     is_client = serializers.BooleanField(read_only=True)
@@ -93,7 +95,7 @@ class LoginSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'tokens', 'is_client', 'is_pharmacist']
+        fields = ['id', 'email', 'first_name', 'password', 'tokens', 'is_client', 'is_pharmacist']
         
     def validate(self, attrs):
         email = attrs.get('email', '')
@@ -107,6 +109,8 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Your account has been disabled, contact Admin')
         
         return {
+            'id': str(user.id),
+            'first_name': user.first_name,
             'email': user.email,
             'tokens' : user.tokens,
             'is_client' : user.is_client,

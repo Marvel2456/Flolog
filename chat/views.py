@@ -25,9 +25,12 @@ class RequestChatView(APIView):
             # Create a new Chatroom instance
             chatroom = Chatroom.objects.create(client=client)
 
+            
+
             serializer = ChatroomSerializer(chatroom)
             return Response({
                 'chatroom': serializer.data,
+               
             })
         else:
             return Response({"error": "Insufficient tokens in the wallet."}, status=400)
@@ -54,9 +57,19 @@ class ViewChatRequests(APIView):
             chatroom.pharmacist = pharmacist
             chatroom.save()
 
+            
+            # Trigger an event indicating a pharmacist has joined the chatroom
+            pusher_client.trigger('chatroom-channel', 'pharmacist-joined', {
+                # 'chatroom_id': chatroom.id,
+                'pharmacist': pharmacist,
+            })
+
         elif chatroom.is_active and chatroom.pharmacist == pharmacist:
             # End the chat and close the chatroom
             chatroom.close_chat()
+
+            # Trigger for the closure of the chatroom
+            pusher_client.trigger('chatroom-channel', 'chatroom-closed', {'chatroom_id': chatroom_id})
 
             # Reward the pharmacist with 500 naira in the wallet
             pharmacist.balance += 500
