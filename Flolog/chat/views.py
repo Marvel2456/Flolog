@@ -16,12 +16,11 @@ class RequestChatView(APIView):
 
     def post(self, request):
         client = Client.objects.get(user=request.user)
-        client_coin = Client.objects.get(client=client)
 
-        if client_coin.coin > 0:
+        if client.coin > 0:
             # Deduct 1 token from the client's wallet
-            client_coin.coin -= 1
-            client_coin.save()
+            client.coin -= 1
+            client.save()
 
             # Create a new Chatroom instance
             chatroom = Chatroom.objects.create(client=client)
