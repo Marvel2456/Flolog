@@ -18,21 +18,17 @@ class RequestChatView(APIView):
         client = Client.objects.get(user=request.user)
         client_coin = Client.objects.get(client=client)
 
-        if client_coin.coin > 0:
+        if client.coin > 0:
             # Deduct 1 token from the client's wallet
-            client_coin.coin -= 1
-            client_coin.save()
+            client.coin -= 1
+            client.save()
 
             # Create a new Chatroom instance
             chatroom = Chatroom.objects.create(client=client)
 
-            # Generate the WebSocket URL using the chatroom ID
-            # websocket_url = request.build_absolute_uri(reverse('chat:chatroom', args=[chatroom.id]))
-
             serializer = ChatroomSerializer(chatroom)
             return Response({
                 'chatroom': serializer.data,
-                # 'websocket_url': websocket_url
             })
         else:
             return Response({"error": "Insufficient tokens in the wallet."}, status=400)
