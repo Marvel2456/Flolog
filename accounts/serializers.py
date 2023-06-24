@@ -144,12 +144,12 @@ class ClientSerializer(serializers.ModelSerializer):
         return None
     class Meta:
         model = Client
-        fields = ['email', 'first_name', 'last_name', 'phone_number', 'coin', 'country', 'state', 'city', 'referred_by',]
+        fields = ['user', 'email', 'first_name', 'last_name', 'phone_number', 'coin', 'country', 'state', 'city', 'referred_by',]
 
 class PharmacistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pharmacist
-        fields = ['email', 'first_name', 'last_name', 'phone_number', 'balance', 'referral_code',]
+        fields = ['user', 'email', 'first_name', 'last_name', 'phone_number', 'balance', 'referral_code',]
 
 class GoLiveSerializer(serializers.ModelSerializer):
     class Meta:
