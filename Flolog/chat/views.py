@@ -40,14 +40,14 @@ class ViewChatRequests(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        pharmacist = Pharmacist.objects.get(user=request.user, is_live=True)
+        pharmacist = Pharmacist.objects.get(user=request.user)
         chat_requests = Chatroom.objects.filter(is_active=True, pharmacist=None)
 
         serializer = ChatroomSerializer(chat_requests, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        pharmacist = Pharmacist.objects.get(user=request.user, is_live=True)
+        pharmacist = Pharmacist.objects.get(user=request.user)
         chatroom_id = request.data.get('chatroom_id')
 
         chatroom = Chatroom.objects.get(id=chatroom_id)
