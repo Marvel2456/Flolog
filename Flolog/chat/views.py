@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .pusher import pusher_client
+from django.core import serializers
 
 # Create your views here.
 
@@ -57,11 +58,11 @@ class ViewChatRequests(APIView):
             chatroom.pharmacist = pharmacist
             chatroom.save()
 
-            
+            pharmacist_data = serializers.serialize('json', [pharmacist])
             # Trigger an event indicating a pharmacist has joined the chatroom
             pusher_client.trigger('chatroom-channel', 'pharmacist-joined', {
                 # 'chatroom_id': chatroom.id,
-                'pharmacist': pharmacist,
+                'pharmacist': pharmacist_data,
             })
 
         elif chatroom.is_active and chatroom.pharmacist == pharmacist:
