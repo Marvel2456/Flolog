@@ -15,10 +15,20 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = '__all__'
 
+
 class ChatroomSerializer(serializers.ModelSerializer):
+    client_email = serializers.EmailField(source='client.user.email', read_only=True)
+    pharmacist_email = serializers.EmailField(source='pharmacist.user.email', read_only=True)
     messages = MessageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Chatroom
-        fields = '__all__'
+        fields = ['id', 'client_email', 'pharmacist_email', 'is_active', 'end_time', 'messages']
+
+# class ChatroomSerializer(serializers.ModelSerializer):
+#     messages = MessageSerializer(many=True, read_only=True)
+
+#     class Meta:
+#         model = Chatroom
+#         fields = '__all__'
 
