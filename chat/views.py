@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .pusher import pusher_client
 from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 
@@ -44,7 +45,7 @@ class ViewChatRequests(APIView):
     def get(self, request):
         try:
             pharmacist = Pharmacist.objects.get(user=request.user)
-        except Pharmacist.DoesNotExist:
+        except ObjectDoesNotExist:
             return Response(data={"error": "Pharmacist not found."}, status=404)
         
         chat_requests = Chatroom.objects.filter(is_active=True, pharmacist=None)
@@ -54,7 +55,7 @@ class ViewChatRequests(APIView):
     def post(self, request):
         try:
             pharmacist = Pharmacist.objects.get(user=request.user)
-        except Pharmacist.DoesNotExist:
+        except ObjectDoesNotExist:
             return Response(data={"error": "Pharmacist not found."}, status=400)
         
         chatroom_id = request.data.get('chatroom_id')
