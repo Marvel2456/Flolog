@@ -92,7 +92,7 @@ class MessageCreateView(APIView):
         if serializer.is_valid():
             chatroom_id = request.data.get('room')
             chatroom = Chatroom.objects.get(id=chatroom_id)
-            serializer.save(room=chatroom)
+            serializer.save(room=chatroom, sender=request.user)
 
             message_data = serializer.data
             message_data['timestamp'] = str(message_data['timestamp'])
