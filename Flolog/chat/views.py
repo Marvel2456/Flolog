@@ -58,11 +58,11 @@ class ViewChatRequests(APIView):
             chatroom.pharmacist = pharmacist
             chatroom.save()
 
-            # pharmacist_data = serializers.serialize('json', [pharmacist])
+            pharmacist_data = serializers.serialize('json', [pharmacist])
             # Trigger an event indicating a pharmacist has joined the chatroom
             pusher_client.trigger('chatroom-channel', 'pharmacist-joined', {
                 # 'chatroom_id': chatroom.id,
-                'pharmacist': pharmacist,
+                'pharmacist': pharmacist_data,
             })
 
         elif chatroom.is_active and chatroom.pharmacist == pharmacist:
