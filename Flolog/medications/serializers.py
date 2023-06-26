@@ -27,6 +27,7 @@ class OrderSerializer(serializers.ModelSerializer):
     owner = ClientSerializer(many=False, read_only=True)
     medication = MedicationSerializer(many=True) 
     class Meta:
+        
         model = Order
         fields = ['medication', 'recipent_name', 'recipent_phone_number', 'recipent_address', 'state', 'city', 'owner']
 
