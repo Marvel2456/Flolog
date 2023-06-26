@@ -43,20 +43,20 @@ class ViewChatRequests(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        try:
-            pharmacist = Pharmacist.objects.get(user=request.user)
-        except ObjectDoesNotExist:
-            return Response(data={"error": "Pharmacist not found."}, status=404)
+       
+        pharmacist = Pharmacist.objects.get(user=request.user)
+        # except ObjectDoesNotExist:
+        #     return Response(data={"error": "Pharmacist not found."}, status=404)
         
         chat_requests = Chatroom.objects.filter(is_active=True, pharmacist=None)
         serializer = ChatroomSerializer(chat_requests, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        try:
-            pharmacist = Pharmacist.objects.get(user=request.user)
-        except ObjectDoesNotExist:
-            return Response(data={"error": "Pharmacist not found."}, status=400)
+        
+        pharmacist = Pharmacist.objects.get(user=request.user)
+        # except ObjectDoesNotExist:
+        #     return Response(data={"error": "Pharmacist not found."}, status=400)
         
         chatroom_id = request.data.get('chatroom_id')
 
