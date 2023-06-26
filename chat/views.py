@@ -74,6 +74,8 @@ class ViewChatRequests(APIView):
                 'pharmacist': pharmacist_data,
             })
 
+            return Response(data={"success": "You have joined the chatroom."})
+
         elif chatroom.is_active and chatroom.pharmacist == pharmacist:
             # End the chat and close the chatroom
             chatroom.close_chat()
@@ -86,7 +88,7 @@ class ViewChatRequests(APIView):
             pharmacist.save()
 
             # Return success response indicating the pharmacist has joined the chatroom
-            return Response(data={"success": "You have joined the chatroom."})
+            return Response(data={"success": "You successfully closed the chatroom."})
         else:
             # Return error response indicating the chatroom is no longer available
             return Response(data={"error": "Chatroom is no longer available."}, status=400)
