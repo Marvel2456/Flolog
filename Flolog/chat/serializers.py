@@ -8,12 +8,19 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = '__all__'
 
+# class MessageSerializer(serializers.ModelSerializer):
+#     # sender = CustomUserSerializer()
+
+#     class Meta:
+#         model = Message
+#         fields = '__all__'
+
 class MessageSerializer(serializers.ModelSerializer):
-    # sender = CustomUserSerializer()
+    sender_email = serializers.EmailField(source='sender.user.email', read_only=True)
 
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ['id', 'room', 'sender_email', 'content', 'timestamp']
 
 
 class ChatroomSerializer(serializers.ModelSerializer):
