@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .pusher import pusher_client
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
+from biodata.models import MedicalHistory, MedicalRecord, FamilyHistory, PatientAllergy
 
 # Create your views here.
 
@@ -24,8 +25,18 @@ class RequestChatView(APIView):
             client.coin -= 1
             client.save()
 
-            # Create a new Chatroom instance
-            chatroom = Chatroom.objects.create(client=client)
+            medical_record = MedicalRecord.objects.get(owner=client)
+            medical_history = MedicalHistory.objects.get(owner=client)
+            patient_allergy = PatientAllergy.objects.get(owner=client)
+            family_history = FamilyHistory.objects.get(owner=client)
+
+            chatroom = Chatroom.objects.create(
+                client=client,
+                med_records=medical_record,
+                med_history=medical_history,
+                allergy=patient_allergy,
+                fam_history=family_history
+            )
 
             
 
@@ -43,20 +54,20 @@ class ViewChatRequests(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        
-        pharmacist = Pharmacist.objects.get(user=request.user)
-        # except ObjectDoesNotExist:
-        #     return Response(data={"error": "Pharmacist not found."}, status=404)
+        try:
+            pharmacist = Pharmacist.objects.get(user=request.user)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Pharmacist not found."}, status=404)
         
         chat_requests = Chatroom.objects.filter(is_active=True, pharmacist=None)
         serializer = ChatroomSerializer(chat_requests, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        
-        pharmacist = Pharmacist.objects.get(user=request.user)
-        # except ObjectDoesNotExist:
-        #     return Response(data={"error": "Pharmacist not found."}, status=400)
+        try:
+            pharmacist = Pharmacist.objects.get(user=request.user)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Pharmacist not found."}, status=400)
         
         chatroom_id = request.data.get('chatroom_id')
 
@@ -74,7 +85,7 @@ class ViewChatRequests(APIView):
                 'pharmacist': pharmacist_data,
             })
 
-            return Response({"success": "You have joined the chatroom."})
+            return Response(data={"success": "You have joined the chatroom."})
 
         elif chatroom.is_active and chatroom.pharmacist == pharmacist:
             # End the chat and close the chatroom
