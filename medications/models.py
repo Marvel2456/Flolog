@@ -31,7 +31,7 @@ class Medication(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.generic_name
+        return str(self.generic_name)
 
 
 class Order(models.Model):
