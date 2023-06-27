@@ -12,28 +12,17 @@ class Medication(models.Model):
     generic_name = models.CharField(max_length=250, blank=True, null=True)
     brand_name = models.CharField(max_length=250, blank=True, null=True)
 
-    TABLET = 'TAB'
-    CAPSULE = 'CAP'
-    SYRUP = 'SYR'
-    SOLUTION = 'SOL'
-    EMULSION = 'EMU'
-    SUSPENSION = 'SUS'
-    INHALER = 'INH'
-    CREAM = 'CRE'
-    PASTE = 'PAS'
-    GEL = 'GE:'
-
     DOSAGE_CHOICES = [
-        (TABLET, 'TAB'),
-        (CAPSULE, 'CAP'),
-        (SYRUP, 'SYR'),
-        (SOLUTION, 'SOL'),
-        (EMULSION, 'EMU'),
-        (SUSPENSION, 'SUS'),
-        (INHALER, 'INH'),
-        (CREAM, 'CRE'),
-        (PASTE, 'PAS'),
-        (GEL, 'GEL'),
+        ('TABLET', 'TABLET'),
+        ('CAPSULE', 'CAPSULE'),
+        ('SYRUP', 'SYRUP'),
+        ('SOLUTION', 'SOLUTION'),
+        ('EMULSION', 'EMULSION'),
+        ('SUSPENSION', 'SUSPENSION'),
+        ('INHALER', 'INHALER'),
+        ('CREAM', 'CREAM'),
+        ('PASTE', 'PASTE'),
+        ('GEL', 'GEL'),
     ]
     dosage_form = models.CharField(max_length=20, choices=DOSAGE_CHOICES, default='TAB', blank=True, null=True)
     dose_strength = models.CharField(max_length=150, blank=True, null=True)
