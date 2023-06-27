@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     # 'social_django',
     # 'drf_social_oauth2',
     'rest_framework',
+    'corsheaders',
     'accounts.apps.AccountsConfig',
     'medications.apps.MedicationsConfig',
     'django_rest_passwordreset',
@@ -58,7 +59,6 @@ INSTALLED_APPS = [
     'channels',
     'chat.apps.ChatConfig',
     'pages.apps.PagesConfig',
-    'corsheaders',
     'drf_yasg',
     'socials.apps.SocialsConfig',
    
@@ -188,11 +188,12 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
-CORS_ALLOW_ALL_ORIGINS: True
+
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',  # Replace with the appropriate port
     # other allowed origins
 ]
+# CORS_ALLOW_ALL_ORIGINS: True
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
