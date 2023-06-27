@@ -189,6 +189,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 CORS_ALLOW_ALL_ORIGINS: True
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:5173',  # Replace with the appropriate port
+    # other allowed origins
+]
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
