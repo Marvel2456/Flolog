@@ -25,6 +25,7 @@ class RequestChatView(APIView):
             client.coin -= 1
             client.save()
 
+
             medical_record = MedicalRecord.objects.get(owner=client)
             medical_history = MedicalHistory.objects.get(owner=client)
             patient_allergy = PatientAllergy.objects.get(owner=client)
@@ -85,7 +86,7 @@ class ViewChatRequests(APIView):
                 'pharmacist': pharmacist_data,
             })
 
-            return Response(data={"success": "You have joined the chatroom."})
+            return Response({"success": "You have joined the chatroom."})
 
         elif chatroom.is_active and chatroom.pharmacist == pharmacist:
             # End the chat and close the chatroom
@@ -112,7 +113,11 @@ class MessageCreateView(APIView):
         serializer = MessageSerializer(data=request.data)
         if serializer.is_valid():
             chatroom_id = request.data.get('room')
-            chatroom = Chatroom.objects.get(id=chatroom_id)
+            try:
+                chatroom = Chatroom.objects.get(id=chatroom_id)
+            except ObjectDoesNotExist:
+                return Response({"error": "Invalid chatroom ID or the chatroom is inactive."}, status=400)
+            
             serializer.save(room=chatroom, sender=request.user)
 
             message_data = serializer.data

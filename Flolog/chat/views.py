@@ -113,7 +113,11 @@ class MessageCreateView(APIView):
         serializer = MessageSerializer(data=request.data)
         if serializer.is_valid():
             chatroom_id = request.data.get('room')
-            chatroom = Chatroom.objects.get(id=chatroom_id)
+            try:
+                chatroom = Chatroom.objects.get(id=chatroom_id)
+            except ObjectDoesNotExist:
+                return Response({"error": "Invalid chatroom ID or the chatroom is inactive."}, status=400)
+            
             serializer.save(room=chatroom, sender=request.user)
 
             message_data = serializer.data

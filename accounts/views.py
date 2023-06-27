@@ -370,7 +370,7 @@ class CareFormView(APIView):
         pharmacist = Pharmacist.objects.get(user=request.user)
         serializer = CareFormSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(pharmacist=pharmacist)
+            care_form = serializer.save(pharmacist=pharmacist)
             log_activity(request.user, f'created a care form for {care_form.patient}')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
