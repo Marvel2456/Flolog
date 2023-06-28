@@ -82,7 +82,7 @@ class ViewChatRequests(APIView):
 
             pharmacist_data = serializers.serialize('json', [pharmacist])
             # Trigger an event indicating a pharmacist has joined the chatroom
-            pusher_client.trigger(chatroom.channel_name, 'pharmacist-joined', {
+            pusher_client.trigger('chatroom-channel', 'pharmacist-joined', {
                 'chatroom_id': chatroom_id,
                 'pharmacist': pharmacist_data,
             })
@@ -94,7 +94,7 @@ class ViewChatRequests(APIView):
             chatroom.close_chat()
 
             # Trigger for the closure of the chatroom
-            pusher_client.trigger(chatroom.channel_name, 'chatroom-closed', {'chatroom_id': chatroom_id})
+            pusher_client.trigger('chatroom-channel', 'chatroom-closed', {'chatroom_id': chatroom_id})
 
             # Reward the pharmacist with 500 naira in the wallet
             pharmacist.balance += 500
