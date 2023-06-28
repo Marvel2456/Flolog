@@ -36,7 +36,8 @@ class RequestChatView(APIView):
                 med_records=medical_record,
                 med_history=medical_history,
                 allergy=patient_allergy,
-                fam_history=family_history
+                fam_history=family_history,
+                channel_name=f'chatroom-{chatroom.id}'
             )
 
             
@@ -125,7 +126,7 @@ class MessageCreateView(APIView):
             message_data['sender'] = str(request.user.email)
             message_data['room'] = str(message_data['room'])
 
-            pusher_client.trigger('chat-channel', 'new-message', {
+            pusher_client.trigger(chatroom.channel_name, 'new-message', {
                 'room': chatroom_id,
                 'sender': str(request.user.email),
                 'content': serializer.data['content'],
