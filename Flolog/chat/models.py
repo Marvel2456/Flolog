@@ -22,6 +22,7 @@ from biodata.models import MedicalHistory, MedicalRecord, FamilyHistory, Patient
 
 class Chatroom(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    channel_name = models.CharField(max_length=255, blank=True, null=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
     pharmacist = models.ForeignKey(Pharmacist, on_delete=models.CASCADE, blank=True, null=True)
     med_records = models.ForeignKey(MedicalRecord, on_delete=models.CASCADE, blank=True, null=True)

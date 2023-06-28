@@ -36,7 +36,7 @@ class ChatroomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chatroom
-        fields = ['id', 'client_email', 'pharmacist_email', 'is_active', 'end_time', 'messages', 'med_records', 'med_history', 'fam_history', 'allergy']
+        fields = ['id', 'channel_name', 'client_email', 'pharmacist_email', 'is_active', 'end_time', 'messages', 'med_records', 'med_history', 'fam_history', 'allergy']
 
 # class ChatroomSerializer(serializers.ModelSerializer):
 #     messages = MessageSerializer(many=True, read_only=True)
