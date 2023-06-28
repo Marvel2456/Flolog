@@ -82,7 +82,7 @@ class ViewChatRequests(APIView):
             pharmacist_data = serializers.serialize('json', [pharmacist])
             # Trigger an event indicating a pharmacist has joined the chatroom
             pusher_client.trigger('chatroom-channel', 'pharmacist-joined', {
-                # 'chatroom_id': chatroom.id,
+                'chatroom_id': chatroom_id,
                 'pharmacist': pharmacist_data,
             })
 
@@ -125,7 +125,13 @@ class MessageCreateView(APIView):
             message_data['sender'] = str(request.user.email)
             message_data['room'] = str(message_data['room'])
 
-            pusher_client.trigger('chat-channel', 'new-message', message_data)
+            pusher_client.trigger('chat-channel', 'new-message', {
+                'room': chatroom_id,
+                'sender': str(request.user.email),
+                'content': serializer.data['content'],
+                'timestamp': str(serializer.data['timestamp'])
+            })
+
 
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
