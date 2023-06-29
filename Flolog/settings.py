@@ -191,7 +191,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 CORS_ALLOW_ALL_ORIGINS: True
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
-    'http://localhost:3000',  # Replace with the appropriate port
+    'http://localhost:3000',
+    'https://flolog.netlify.app/'  # Replace with the appropriate port
     # other allowed origins
 ]
 
