@@ -14,6 +14,7 @@ class Age(models.Model):
 class Allergy(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     name = models.CharField(max_length=200, blank=True, null=True)
+    is_toggled = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.name
@@ -21,6 +22,7 @@ class Allergy(models.Model):
 class History(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     name = models.CharField(max_length=200, blank=True, null=True)
+    is_toggled = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.name
@@ -29,6 +31,7 @@ class History(models.Model):
 class RiskFactor(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     name = models.CharField(max_length=200, blank=True, null=True)
+    is_toggled = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.name
