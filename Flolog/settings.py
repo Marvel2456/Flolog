@@ -192,7 +192,7 @@ CORS_ALLOW_ALL_ORIGINS: True
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
     'http://localhost:3000',
-    'https://flolog.netlify.app/'  # Replace with the appropriate port
+    'https://flolog.netlify.app'  # Replace with the appropriate port
     # other allowed origins
 ]
 
