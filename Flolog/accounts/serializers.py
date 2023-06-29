@@ -179,3 +179,9 @@ class CareFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = CareForm
         fields = '__all__'
+
+
+class PlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plan
+        fields = '__all__'

@@ -32,6 +32,9 @@ urlpatterns = [
     # Mnitor User Activity and History
     path('activity/', UserActivityView.as_view(), name='activity'),
     path('user_activity/', AdminUserActivityView.as_view(), name='user_activity'),
+    path('plan/', PlanView.as_view(), name='plan'),
+    path('create_plan/', PlanCreateView.as_view(), name='create_plan'),
+    path('plan_detail/<str:uuid>/', PlanDetailView.as_view(), name='plan_detail'),
     # Payment
     path('make_payment/', views.make_payment, name='make_payment'),
     path('verify_payment/<str:reference>/', VerifyPayment.as_view(), name='verify_payment'),

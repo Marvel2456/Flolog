@@ -356,6 +356,60 @@ class AdminUserActivityView(APIView):
         return Response(serializer.data)
     
 
+class PlanView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        plan = Plan.objects.all()
+        serializer = PlanSerializer(plan, many=True)
+        return Response(serializer.data)
+
+
+class PlanCreateView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, format=None):
+        plan = Plan.objects.all()
+        serializer = PlanSerializer(plan, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        plan = Plan.objects.all()
+        serializer = PlanSerializer(data=request.data)
+        if serializer.is_valid():
+            plan = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class PlanDetailView(APIView):
+    permission_classes = [IsAdminUser]
+    """
+    Retrieve, update or delete a client instance.
+    """
+    def get_object(self, uuid):
+        try:
+            return Plan.objects.get(id=uuid)
+        except Plan.DoesNotExist:
+            raise Http404
+
+    def get(self, request, uuid, format=None):
+        plan = self.get_object(uuid)
+        serializer = PlanSerializer(plan)
+        return Response(serializer.data)
+    
+    def put(self, request, uuid, format=None):
+        plan = self.get_object(uuid)
+        serializer = PlanSerializer(plan, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, uuid, format=None):
+        plan = self.get_object(uuid)
+        plan.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 class CareFormView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -400,8 +454,6 @@ class AdminDetailCareformView(APIView):
         care_form = self.get_object(uuid)
         serializer = CareFormSerializer(care_form)
         return Response(serializer.data)
-
-
 
     def delete(self, request, uuid, format=None):
         care_form = self.get_object(uuid)
