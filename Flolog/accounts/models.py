@@ -68,9 +68,9 @@ class Pharmacist(models.Model):
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
     phone_number = models.CharField(max_length=100, blank=True, null=True)
+    profile_pic = models.ImageField(upload_to='upload/pharma profile', blank=True, null=True)
     balance = models.PositiveIntegerField(default=0, blank=True, null=True)
     referral_code = models.CharField(max_length=10, unique=True, blank=True, null=True)
-    # is_live = models.BooleanField(default=False, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -98,6 +98,7 @@ class Client(models.Model):
     last_name = models.CharField(max_length=250)
     phone_number = models.CharField(max_length=100, blank=True, null=True)
     coin = models.PositiveIntegerField(default=1, blank=True)
+    profile_pic = models.ImageField(upload_to='upload/client profile', blank=True, null=True)
     country = models.CharField(max_length=250, blank=True, null=True)
     state = models.CharField(max_length=250, blank=True, null=True)
     city = models.CharField(max_length=250, blank=True, null=True)

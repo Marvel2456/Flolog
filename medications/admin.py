@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import  Medication
+from .models import  Medication, MedicationDetail
 
 # Register your models here.
-# admin.site.register(Order)
+admin.site.register(MedicationDetail)
 admin.site.register(Medication)
