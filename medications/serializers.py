@@ -9,7 +9,7 @@ class AdminMedicationSerializer(serializers.ModelSerializer):
         model = Medication
         fields = [
             'id', 'owner', 'upload_prescription', 'medication_details', 'recipent_name', 
-            'recipent_phone_number', 'recipent_address', 'state', 'city' 'status', 'created'
+            'recipent_phone_number', 'recipent_address', 'state', 'city', 'status', 'created'
             ]
 
 
@@ -25,7 +25,7 @@ class MedicationSerializer(serializers.ModelSerializer):
         model = Medication
         fields = [
             'id', 'owner', 'upload_prescription', 'medication_details', 'recipent_name', 
-            'recipent_phone_number', 'recipent_address', 'state', 'city' 'status', 'created'
+            'recipent_phone_number', 'recipent_address', 'state', 'city', 'status', 'created'
             ]
 
     def create(self, validated_data):
