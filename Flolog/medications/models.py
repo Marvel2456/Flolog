@@ -4,8 +4,36 @@ import uuid
 
 # Create your models here.
 
+class Medication(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='owner')
+    upload_prescription = models.FileField(upload_to='upload/prescription', blank=True, null=True)
+    recipent_name = models.CharField(max_length=150, blank=True, null=True)
+    recipent_phone_number = models.CharField(max_length=20, blank=True, null=True)
+    recipent_address = models.CharField(max_length=250, blank=True, null=True)
+    state = models.CharField(max_length=150, blank=True, null=True)
+    city = models.CharField(max_length=150, blank=True, null=True)
+    STATUS = [
+        ('PENDING', 'PENDING'),
+        ('DELIVERED', 'DELIVERED')
+    ]
+    status = models.CharField(max_length=20, choices=STATUS, default='PENDING')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(f'{self.recipent_name} - {self.owner}')
+    
+
+
+
+
+
 class MedicationDetail(models.Model):
-    # medication = models.ForeignKey(Medication, on_delete=models.CASCADE, related_name='medication_details')
+    medication = models.ForeignKey(
+        Medication,
+        on_delete=models.CASCADE,
+        related_name='medication_details'
+    )
     DOSAGE_CHOICES = [
         ('TABLET', 'TABLET'),
         ('CAPSULE', 'CAPSULE'),
@@ -26,27 +54,5 @@ class MedicationDetail(models.Model):
 
     def __str__(self):
         return self.generic_name
-
-
-class Medication(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='owner')
-    upload_prescription = models.FileField(upload_to='upload/prescription', blank=True, null=True)
-    medication_details = models.ForeignKey(MedicationDetail, on_delete=models.CASCADE, blank=True, null=True)
-    recipent_name = models.CharField(max_length=150, blank=True, null=True)
-    recipent_phone_number = models.CharField(max_length=20, blank=True, null=True)
-    recipent_address = models.CharField(max_length=250, blank=True, null=True)
-    state = models.CharField(max_length=150, blank=True, null=True)
-    city = models.CharField(max_length=150, blank=True, null=True)
-    STATUS = [
-        ('PENDING', 'PENDING'),
-        ('DELIVERED', 'DELIVERED')
-    ]
-    status = models.CharField(max_length=20, choices=STATUS, default='PENDING')
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return str(f'{self.recipent_name} - {self.owner}')
-    
 
 

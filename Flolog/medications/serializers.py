@@ -31,17 +31,13 @@ class MedicationSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'owner', 'upload_prescription', 'medication_details', 'recipent_name', 
             'recipent_phone_number', 'recipent_address', 'state', 'city', 'status', 'created'
-            ]
-
+        ]
 
     def create(self, validated_data):
         medication_details_data = validated_data.pop('medication_details')
         medication = Medication.objects.create(**validated_data)
 
-        medication_details = []
         for detail_data in medication_details_data:
-            # detail_data['medication'] = medication.id  # Associate Medication instance with MedicationDetail
-            medication_details.append(MedicationDetail(**detail_data))
+            MedicationDetail.objects.create(medication=medication, **detail_data)
 
-        MedicationDetail.objects.bulk_create(medication_details)
         return medication
