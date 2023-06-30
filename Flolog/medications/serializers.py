@@ -1,15 +1,20 @@
 from rest_framework import serializers
 from .models import Medication, MedicationDetail
-from accounts.serializers import ClientSerializer
+from accounts.models import CustomUser
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
 
 
 class AdminMedicationSerializer(serializers.ModelSerializer):
-    owner = ClientSerializer()
+    owner = UserSerializer()
     class Meta:
         model = Medication
         fields = [
             'id', 'owner', 'upload_prescription', 'medication_details', 'recipent_name', 
-            'recipent_phone_number', 'recipent_address', 'state', 'city' 'status', 'created'
+            'recipent_phone_number', 'recipent_address', 'state', 'city', 'status', 'created'
             ]
 
 
@@ -25,7 +30,7 @@ class MedicationSerializer(serializers.ModelSerializer):
         model = Medication
         fields = [
             'id', 'owner', 'upload_prescription', 'medication_details', 'recipent_name', 
-            'recipent_phone_number', 'recipent_address', 'state', 'city' 'status', 'created'
+            'recipent_phone_number', 'recipent_address', 'state', 'city', 'status', 'created'
             ]
 
     def create(self, validated_data):

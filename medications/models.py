@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import Client
+from accounts.models import CustomUser
 import uuid
 
 # Create your models here.
@@ -7,7 +7,7 @@ import uuid
 
 class Medication(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='owner')
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='owner')
     upload_prescription = models.FileField(upload_to='upload/prescription', blank=True, null=True)
     medication_details = models.JSONField(default=list)
     recipent_name = models.CharField(max_length=150, blank=True, null=True)
