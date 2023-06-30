@@ -33,12 +33,14 @@ class MedicationSerializer(serializers.ModelSerializer):
             'recipent_phone_number', 'recipent_address', 'state', 'city', 'status', 'created'
             ]
 
+
     def create(self, validated_data):
         medication_details_data = validated_data.pop('medication_details')
         medication = Medication.objects.create(**validated_data)
 
         for detail_data in medication_details_data:
-            MedicationDetail.objects.create(medication=medication, **detail_data)
+            detail_data['medication'] = medication.id  # Assign the medication ID to the medication field
+            MedicationDetail.objects.create(**detail_data)
 
         return medication
 
