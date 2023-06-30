@@ -1,10 +1,15 @@
 from rest_framework import serializers
 from .models import Medication, MedicationDetail
-from accounts.serializers import ClientSerializer
+from accounts.models import CustomUser
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
 
 
 class AdminMedicationSerializer(serializers.ModelSerializer):
-    owner = ClientSerializer()
+    owner = UserSerializer()
     class Meta:
         model = Medication
         fields = [
