@@ -22,6 +22,7 @@ class MedicationDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicationDetail
         fields = '__all__'
+
 class MedicationSerializer(serializers.ModelSerializer):
     medication_details = MedicationDetailSerializer(many=True)
 
@@ -39,7 +40,7 @@ class MedicationSerializer(serializers.ModelSerializer):
 
         medication_details = []
         for detail_data in medication_details_data:
-            medication_details.append(MedicationDetail(**detail_data))
+            medication_details.append(MedicationDetail(medication=medication, **detail_data))
 
         MedicationDetail.objects.bulk_create(medication_details)
         return medication

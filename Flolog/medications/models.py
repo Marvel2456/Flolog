@@ -9,7 +9,7 @@ class Medication(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='owner')
     upload_prescription = models.FileField(upload_to='upload/prescription', blank=True, null=True)
-    medication_details = models.JSONField(default=list)
+    # medication_details = models.JSONField(default=list)
     recipent_name = models.CharField(max_length=150, blank=True, null=True)
     recipent_phone_number = models.CharField(max_length=20, blank=True, null=True)
     recipent_address = models.CharField(max_length=250, blank=True, null=True)
@@ -27,6 +27,7 @@ class Medication(models.Model):
     
 
 class MedicationDetail(models.Model):
+    medication = models.ForeignKey(Medication, on_delete=models.CASCADE, related_name='medication_details')
     DOSAGE_CHOICES = [
         ('TABLET', 'TABLET'),
         ('CAPSULE', 'CAPSULE'),
