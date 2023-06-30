@@ -27,6 +27,8 @@ class Medication(models.Model):
     
 
 class MedicationDetail(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    medication = models.ForeignKey(Medication, on_delete=models.CASCADE, related_name='details')
     DOSAGE_CHOICES = [
         ('TABLET', 'TABLET'),
         ('CAPSULE', 'CAPSULE'),
