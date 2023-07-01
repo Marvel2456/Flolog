@@ -26,18 +26,29 @@ class MedicationDetailSerializer(serializers.ModelSerializer):
 class MedicationSerializer(serializers.ModelSerializer):
     medication_details = MedicationDetailSerializer(many=True)
 
+    def create(self, validated_data):
+        medication_details_data = validated_data.pop('medication_details')
+        medication = Medication.objects.create(**validated_data)
+
+        medication_details = []
+        for med_detail in medication_details_data:
+            med_detail = MedicationDetail(medication=medication, **med_detail)
+            medication_details.append(med_detail)
+
+        MedicationDetail.objects.bulk_create(medication_details)
+
+        # Serialize the children objects
+        serialized_medication_details = MedicationDetailSerializer(medication_details, many=True).data
+
+        # Add the serialized children to the response
+        medication_data = self.data
+        medication_data['medication_details'] = serialized_medication_details
+
+        return medication_data
+
     class Meta:
         model = Medication
         fields = [
             'id', 'owner', 'upload_prescription', 'medication_details', 'recipent_name', 
             'recipent_phone_number', 'recipent_address', 'state', 'city', 'status', 'created'
         ]
-
-    def create(self, validated_data):
-        medication_details_data = validated_data.pop('medication_details')
-        medication = Medication.objects.create(**validated_data)
-
-        for detail_data in medication_details_data:
-            MedicationDetail.objects.create(medication=medication, **detail_data)
-
-        return medication
