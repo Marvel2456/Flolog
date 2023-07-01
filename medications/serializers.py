@@ -42,6 +42,7 @@ class MedicationSerializer(serializers.ModelSerializer):
 
         # Add the serialized children to the response
         medication_data = self.data
+        medication_data = MedicationSerializer(medication).data
         medication_data['medication_details'] = serialized_medication_details
 
         return medication_data
