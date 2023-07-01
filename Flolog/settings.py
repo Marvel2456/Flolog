@@ -115,7 +115,7 @@ ASGI_APPLICATION = "Flolog.asgi.application"
 
 DATABASES = {
 
-    'default': dj_database_url.parse('postgres://flolog_030k_user:FE1rVuInsrYD2DpfVmw26i2xMRLBICps@dpg-cifhb659aq09mhnfjh9g-a.ohio-postgres.render.com/flolog_030k')
+    'default': dj_database_url.parse('postgres://flolog_qrsa_user:LmcMM1Vucl7FEftAb21wtLFrVqAiP0q3@dpg-cifs94tgkuvojjdtlud0-a.ohio-postgres.render.com/flolog_qrsa')
 
 }
 
