@@ -32,7 +32,7 @@ class MedicationSerializer(serializers.ModelSerializer):
 
         medication_details = []
         for med_detail_data in medication_details_data:
-            med_detail_data['medication'] = medication  # Assign the medication instance to the medication field
+            med_detail_data['medication'] = medication.id  # Assign the medication instance to the medication field
             medication_details.append(MedicationDetail(**med_detail_data))
 
         MedicationDetail.objects.bulk_create(medication_details)
