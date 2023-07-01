@@ -31,21 +31,21 @@ class MedicationSerializer(serializers.ModelSerializer):
         medication = Medication.objects.create(**validated_data)
 
         medication_details = []
-        for med_detail in medication_details_data:
-            med_detail = MedicationDetail(medication=medication, **med_detail)
-            medication_details.append(med_detail)
+        for med_detail_data in medication_details_data:
+            med_detail_data['medication'] = medication.id  # Assign the medication instance to the medication field
+            medication_details.append(MedicationDetail(**med_detail_data))
 
         MedicationDetail.objects.bulk_create(medication_details)
 
-        # Serialize the children objects
+        # Serialize the medication details objects
         serialized_medication_details = MedicationDetailSerializer(medication_details, many=True).data
 
-        # Add the serialized children to the response
-        medication_data = self.data
+        # Update the medication instance with the serialized medication details
         medication_data = MedicationSerializer(medication).data
         medication_data['medication_details'] = serialized_medication_details
 
         return medication_data
+
 
     class Meta:
         model = Medication
