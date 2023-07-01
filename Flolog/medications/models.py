@@ -25,9 +25,6 @@ class Medication(models.Model):
     
 
 
-
-
-
 class MedicationDetail(models.Model):
     medication = models.ForeignKey(
         Medication,
