@@ -19,7 +19,7 @@ class Medication(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS, default='PENDING')
     created = models.DateTimeField(auto_now_add=True)
-    medication_details = models.ManyToManyField('MedicationDetail', related_name='medications', using='default')
+    medication_details = models.ManyToManyField('MedicationDetail', related_name='medications')
 
     def __str__(self):
         return str(f'{self.recipent_name} - {self.owner}')
