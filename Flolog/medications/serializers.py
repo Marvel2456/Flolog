@@ -35,8 +35,7 @@ class MedicationSerializer(serializers.ModelSerializer):
             medication_detail = MedicationDetail.objects.create(**med_detail_data)
             medication_details.append(medication_detail)
 
-        medication.medication_details.set(medication_details)
-        medication.save()
+        medication.medication_details.add(*medication_details)
 
 
 
