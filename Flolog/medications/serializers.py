@@ -36,6 +36,7 @@ class MedicationSerializer(serializers.ModelSerializer):
             medication_details.append(medication_detail)
 
         medication.medication_details.set(medication_details)
+        medication.save()
 
 
 
