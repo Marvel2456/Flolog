@@ -19,7 +19,7 @@ class Medication(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS, default='PENDING')
     created = models.DateTimeField(auto_now_add=True)
-    medication_details = models.ManyToManyField('MedicationDetail', related_name='medications')
+    # medication_details = models.ManyToManyField('MedicationDetail', related_name='medications')
 
     def __str__(self):
         return str(f'{self.recipent_name} - {self.owner}')
@@ -28,6 +28,7 @@ class Medication(models.Model):
 
 class MedicationDetail(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    medication = models.ForeignKey(Medication, on_delete=models.CASCADE, related_name='medication_details')
     DOSAGE_CHOICES = [
         ('TABLET', 'TABLET'),
         ('CAPSULE', 'CAPSULE'),
