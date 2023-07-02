@@ -32,14 +32,11 @@ class MedicationSerializer(serializers.ModelSerializer):
 
         medication_details = []
         for med_detail_data in medication_details_data:
-            medication_details.append(MedicationDetail(**med_detail_data))
-
-        if medication_details:
-            medication.medication_details.set(medication_details)
+            medication_detail = MedicationDetail.objects.create(**med_detail_data)
+            medication_details.append(medication_detail)
 
         medication.medication_details.set(medication_details)
 
-        return medication
 
 
     class Meta:
