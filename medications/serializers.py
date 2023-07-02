@@ -48,7 +48,7 @@ class MedicationSerializer(serializers.ModelSerializer):
     medication_details = MedicationDetailSerializer(many=True, required=False)
 
     def create(self, validated_data):
-        medication_details_data = validated_data.pop('medication_details')
+        medication_details_data = validated_data.pop('medication_details', [])
         medication = Medication.objects.create(**validated_data)
 
         medication_details = []
