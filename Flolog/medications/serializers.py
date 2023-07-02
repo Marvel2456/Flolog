@@ -30,14 +30,10 @@ class MedicationSerializer(serializers.ModelSerializer):
         medication_details_data = validated_data.pop('medication_details')
         medication = Medication.objects.create(**validated_data)
 
-        medication_details = []
         for med_detail_data in medication_details_data:
-            medication_detail = MedicationDetail.objects.create(**med_detail_data)
-            medication_details.append(medication_detail)
+            MedicationDetail.objects.create(medication=medication, **med_detail_data)
 
-        medication.medication_details.add(*medication_details)
-
-
+        return medication
 
     class Meta:
         model = Medication
