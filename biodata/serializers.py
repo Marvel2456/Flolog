@@ -33,7 +33,7 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
         fields = ['owner', 'sex', 'age', 'weight', 'height', 'blood_group', 'genotype',]
 
 
-class PatientAllergySerialier(serializers.ModelSerializer):
+class PatientAllergySerializer(serializers.ModelSerializer):
     allergy = AllergySerializer(many=True)
     owner = ClientSerializer(many=False, read_only=True)
     class Meta:
