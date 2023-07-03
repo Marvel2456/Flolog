@@ -161,12 +161,12 @@ class PatientAllergyView(APIView):
     def get(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         patient_allergy = Allergy.objects.filter(owner=owner)
-        serializer = PatientAllergySerialier(patient_allergy, many=True)
+        serializer = PatientAllergySerializer(patient_allergy, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
         owner = Client.objects.get(user=request.user)
-        serializer = PatientAllergySerialier(data=request.data)
+        serializer = PatientAllergySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=owner)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -179,14 +179,14 @@ class AllergyDetailView(APIView):
     def get(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         patient_allergy = PatientAllergy.objects.get(owner=owner)
-        serializer = PatientAllergySerialier(patient_allergy)
+        serializer = PatientAllergySerializer(patient_allergy)
         log_activity(request.user, 'Viewed biodata')
         return Response(serializer.data)
 
     def put(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         patient_allergy = PatientAllergy.objects.get(owner=owner)
-        serializer = PatientAllergySerialier(patient_allergy, data=request.data)
+        serializer = PatientAllergySerializer(patient_allergy, data=request.data)
         if serializer.is_valid():
             serializer.save()
             log_activity(request.user, 'Updated biodata')
