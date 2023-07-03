@@ -325,11 +325,11 @@ class AdminAllergyView(APIView):
 
     def get(self, request, formant=None):
         allergy = PatientAllergy.objects.all()
-        serializer = AdminAllergySerialier(allergy, many=True)
+        serializer = AdminAllergySerializer(allergy, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        serializer = AdminAllergySerialier(data=request.data)
+        serializer = AdminAllergySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -350,12 +350,12 @@ class AdminAllergyDetailView(APIView):
 
     def get(self, request, uuid, format=None):
         allergy = self.get_object(uuid)
-        serializer = AdminAllergySerialier(allergy)
+        serializer = AdminAllergySerializer(allergy)
         return Response(serializer.data)
 
     def put(self, request, uuid, format=None):
         allergy = self.get_object(uuid)
-        serializer = AdminAllergySerialier(allergy, data=request.data)
+        serializer = AdminAllergySerializer(allergy, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
