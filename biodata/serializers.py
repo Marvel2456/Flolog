@@ -34,7 +34,6 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
 
 
 class PatientAllergySerializer(serializers.ModelSerializer):
-    allergy = AllergySerializer(many=True, source='allergies')
     owner = ClientSerializer(many=False, read_only=True)
     class Meta:
         model = PatientAllergy
@@ -52,38 +51,36 @@ class PatientAllergySerializer(serializers.ModelSerializer):
     #     return patient_allergy
     
 class MedicalHistorySerializer(serializers.ModelSerializer):
-    history = HistorySerializer(many=True)
     owner = ClientSerializer(many=False, read_only=True)
     class Meta:
         model = MedicalHistory
         fields = '__all__'
 
-    def create(self, validated_data):
-        histories_data = validated_data.pop('histories')
-        med_history = MedicalHistory.objects.create()
+    # def create(self, validated_data):
+    #     histories_data = validated_data.pop('histories')
+    #     med_history = MedicalHistory.objects.create()
 
-        for history_data in histories_data:
-            history, _ = History.objects.get_or_create(**history_data)
-            med_history.histories.add(history)
+    #     for history_data in histories_data:
+    #         history, _ = History.objects.get_or_create(**history_data)
+    #         med_history.histories.add(history)
 
-        return med_history
+    #     return med_history
 
 class FamilyHistorySerializer(serializers.ModelSerializer):
-    risk = RiskFactorSerializer(many=True)
     owner = ClientSerializer(many=False, read_only=True)
     class Meta:
         model = FamilyHistory
         fields = '__all__'
 
-    def create(self, validated_data):
-        risks_data = validated_data.pop('risks')
-        fam_history = FamilyHistory.objects.create()
+    # def create(self, validated_data):
+    #     risks_data = validated_data.pop('risks')
+    #     fam_history = FamilyHistory.objects.create()
 
-        for risk_data in risks_data:
-            risk_factor, _ = RiskFactor.objects.get_or_create(**risk_data)
-            fam_history.risks.add(risk_factor)
+    #     for risk_data in risks_data:
+    #         risk_factor, _ = RiskFactor.objects.get_or_create(**risk_data)
+    #         fam_history.risks.add(risk_factor)
 
-        return fam_history
+    #     return fam_history
 
 
 class AdminMedicalRecordSerializer(serializers.ModelSerializer):
