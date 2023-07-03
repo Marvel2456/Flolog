@@ -188,7 +188,7 @@ class AllergyDetailView(APIView):
         patient_allergy = PatientAllergy.objects.get(owner=owner)
         serializer = PatientAllergySerializer(patient_allergy, data=request.data)
         if serializer.is_valid():
-            allergies_data = request.data.get('allergies', [])
+            allergies_data = request.data.get('allergy', [])
             patient_allergy.allergies.clear()  # Clear existing allergies
 
             for allergy_data in allergies_data:
