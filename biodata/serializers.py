@@ -34,7 +34,7 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
 
 
 class PatientAllergySerializer(serializers.ModelSerializer):
-    allergy = AllergySerializer(many=True)
+    allergy = AllergySerializer(many=True, source='allergies')
     owner = ClientSerializer(many=False, read_only=True)
     class Meta:
         model = PatientAllergy
