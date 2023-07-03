@@ -188,7 +188,12 @@ class AllergyDetailView(APIView):
         patient_allergy = PatientAllergy.objects.get(owner=owner)
         serializer = PatientAllergySerializer(patient_allergy, data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            allergies_data = request.data.get('allergies', [])
+            patient_allergy.allergies.clear()  # Clear existing allergies
+
+            for allergy_data in allergies_data:
+                allergy = Allergy.objects.create(name=allergy_data)
+                patient_allergy.allergies.add(allergy)
             log_activity(request.user, 'Updated biodata')
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
