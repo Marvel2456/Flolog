@@ -14,7 +14,6 @@ class Age(models.Model):
 class Allergy(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     name = models.CharField(max_length=200, blank=True, null=True)
-    is_toggled = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.name
@@ -22,7 +21,7 @@ class Allergy(models.Model):
 class History(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     name = models.CharField(max_length=200, blank=True, null=True)
-    is_toggled = models.BooleanField(default=False)
+    
 
     def __str__(self) -> str:
         return self.name
@@ -31,7 +30,7 @@ class History(models.Model):
 class RiskFactor(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     name = models.CharField(max_length=200, blank=True, null=True)
-    is_toggled = models.BooleanField(default=False)
+    
 
     def __str__(self) -> str:
         return self.name
@@ -76,7 +75,7 @@ class MedicalRecord(models.Model):
 class PatientAllergy(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
-    allergy = models.ManyToManyField(Allergy)
+    allergies = models.ManyToManyField(Allergy)
     others = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -89,7 +88,7 @@ class PatientAllergy(models.Model):
 class MedicalHistory(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
-    history = models.ManyToManyField(History)
+    histories = models.ManyToManyField(History)
     others = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
@@ -101,7 +100,7 @@ class MedicalHistory(models.Model):
 class FamilyHistory(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     owner = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
-    risk = models.ManyToManyField(RiskFactor)
+    risks = models.ManyToManyField(RiskFactor)
     others = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:

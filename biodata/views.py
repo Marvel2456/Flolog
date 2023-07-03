@@ -176,7 +176,6 @@ class PatientAllergyView(APIView):
 class AllergyDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-
     def get(self, request, format=None):
         owner = Client.objects.get(user=request.user)
         patient_allergy = PatientAllergy.objects.get(owner=owner)
