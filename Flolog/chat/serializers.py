@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import *
 from accounts.serializers import *
 from accounts.models import CustomUser
-from biodata.serializers import MedicalHistorySerializer, MedicalRecordSerializer, PatientAllergySerialier, FamilyHistorySerializer
+from biodata.serializers import MedicalHistorySerializer, MedicalRecordSerializer, PatientAllergySerializer, FamilyHistorySerializer
 from accounts.serializers import ClientSerializer
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -32,7 +32,7 @@ class ChatroomSerializer(serializers.ModelSerializer):
     med_records = MedicalRecordSerializer(read_only=True)
     med_history = MedicalHistorySerializer(read_only=True)
     fam_history = FamilyHistorySerializer(read_only=True)
-    allergy = PatientAllergySerialier(read_only=True)
+    allergy = PatientAllergySerializer(read_only=True)
 
     class Meta:
         model = Chatroom

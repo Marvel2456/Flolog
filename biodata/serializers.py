@@ -93,7 +93,7 @@ class AdminMedicalRecordSerializer(serializers.ModelSerializer):
         fields = ['id', 'owner', 'sex', 'age', 'weight', 'height', 'blood_group', 'genotype',]
 
 
-class AdminAllergySerialier(serializers.ModelSerializer):
+class AdminAllergySerializer(serializers.ModelSerializer):
     owner = ClientSerializer()
     class Meta:
         model = Allergy
