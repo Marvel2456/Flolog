@@ -41,15 +41,15 @@ class PatientAllergySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-    def create(self, validated_data):
-        allergies_data = validated_data.pop('allergies')
-        patient_allergy = PatientAllergy.objects.create()
+    # def create(self, validated_data):
+    #     allergies_data = validated_data.pop('allergies')
+    #     patient_allergy = PatientAllergy.objects.create()
 
-        for allergy_data in allergies_data:
-            allergy, _ = Allergy.objects.get_or_create(**allergy_data)
-            patient_allergy.allergies.add(allergy)
+    #     for allergy_data in allergies_data:
+    #         allergy, _ = Allergy.objects.get_or_create(**allergy_data)
+    #         patient_allergy.allergies.add(allergy)
 
-        return patient_allergy
+    #     return patient_allergy
     
 class MedicalHistorySerializer(serializers.ModelSerializer):
     history = HistorySerializer(many=True)
