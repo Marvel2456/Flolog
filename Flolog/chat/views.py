@@ -97,7 +97,7 @@ class ViewChatRequests(APIView):
             pusher_client.trigger('chatroom-channel', 'chatroom-closed', {'chatroom_id': chatroom_id})
 
             # Reward the pharmacist with 500 naira in the wallet
-            pharmacist.balance += 500
+            pharmacist.balance += 350
             pharmacist.save()
 
             # Return success response indicating the pharmacist has joined the chatroom
