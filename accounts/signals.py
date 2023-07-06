@@ -32,6 +32,7 @@ def create_portfolio(sender, instance, created, **kwargs):
                 country = user.country,
                 state = user.state,
                 city = user.city,
+                profile_pic = user.profile_pic
             )
             
 
@@ -41,13 +42,12 @@ def update_user(sender, instance, created, **kwargs):
     user = client.user
 
     if created == False:
-        user.email = client.email
         user.first_name = client.first_name
         user.last_name = client.last_name
-        user.phone_number = client.phone_number
         user.country = client.country
         user.state = client.state
         user.city = client.city
+        user.profile_pic = client.profile_pic
         user.save()
 
 
@@ -64,6 +64,7 @@ def create_pharma_portfolio(sender, instance, created, **kwargs):
                 first_name = user.first_name,
                 last_name = user.last_name,
                 phone_number = user.phone_number,
+                profile_pic = user.profile_pic,
                 referral_code = generate_referral_code()
             )
 
@@ -73,10 +74,9 @@ def update_pharma_user(sender, instance, created, **kwargs):
     user = pharmacist.user
 
     if created == False:
-        user.email = pharmacist.email
         user.first_name = pharmacist.first_name
         user.last_name = pharmacist.last_name
-        user.phone_number = pharmacist.phone_number
+        user.profile_pic = pharmacist.profile_pic
         user.save()
 
 
