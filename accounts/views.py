@@ -501,7 +501,6 @@ def make_payment(request):
 
 class VerifyPayment(APIView):
     def get(self, request, reference):
-        plan_id = request.query_params.get('plan_id')
         client = Client.objects.get(user=request.user)
         transaction = PaymentHistory.objects.get(
         paystack_charge_id=reference, client=client)
@@ -517,10 +516,11 @@ class VerifyPayment(APIView):
         if resp['data']['status'] == 'success':
             amount = resp['data']['amount']
             amount_new = amount // 100
-            pay = PaymentHistory.objects.get(plan_id)
-            PaymentHistory.objects.filter(paystack_charge_id=reference).update(paid=True,
+            pay = PaymentHistory.objects.filter(paystack_charge_id=reference).update(paid=True,
                                                                                         amount=amount_new)
-            client.coin += pay.plan.token
-            client.save()
+            if reference:
+            
+                client.coin += pay.plan.token
+                client.save()
             return Response(resp)
         return Response(resp)
