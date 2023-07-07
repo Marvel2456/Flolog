@@ -516,11 +516,27 @@ class VerifyPayment(APIView):
         if resp['data']['status'] == 'success':
             amount = resp['data']['amount']
             amount_new = amount // 100
-            pay = PaymentHistory.objects.filter(paystack_charge_id=reference).update(paid=True,
-                                                                                        amount=amount_new)
-            if reference:
-            
-                client.coin += pay.plan.token
+            payment = PaymentHistory.objects.filter(paystack_charge_id=reference).first()
+            if payment:
+                client.coin += payment.plan.token
+                payment.paid = True
+                payment.amount = amount_new
+                payment.save()
                 client.save()
             return Response(resp)
         return Response(resp)
+
+
+
+
+        # if resp['data']['status'] == 'success':
+        #     amount = resp['data']['amount']
+        #     amount_new = amount // 100
+        #     pay = PaymentHistory.objects.filter(paystack_charge_id=reference).update(paid=True,
+        #                                                                                 amount=amount_new)
+        #     if reference:
+            
+        #         client.coin += pay.plan.token
+        #         client.save()
+        #     return Response(resp)
+        # return Response(resp)
