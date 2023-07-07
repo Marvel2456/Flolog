@@ -505,7 +505,7 @@ class VerifyPayment(APIView):
         plan_id = request.data.get('plan_id')
         client = Client.objects.get(user=request.user)
         plan = Plan.objects.get(id=plan_id)
-        transaction = PaymentHistory.objects.get(
+        transaction = PaymentHistory.objects.filter(
         paystack_charge_id=reference, plan=plan, client=client)
         reference = transaction.paystack_charge_id
         url = 'https://api.paystack.co/transaction/verify/{}'.format(reference)
