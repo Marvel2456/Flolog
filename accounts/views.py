@@ -461,7 +461,7 @@ class AdminDetailCareformView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
-@csrf_exempt    
+# @csrf_exempt    
 @api_view(['POST'])
 def make_payment(request):
     plan_id = request.data.get('plan_id')
@@ -502,9 +502,11 @@ def make_payment(request):
 class VerifyPayment(APIView):
 
     def get(self, request, reference):
+        plan_id = request.data.get('plan_id')
         client = Client.objects.get(user=request.user)
+        plan = Plan.objects.get(id=plan_id)
         transaction = PaymentHistory.objects.get(
-        paystack_charge_id=reference, client=client)
+        paystack_charge_id=reference, plan=plan, client=client)
         reference = transaction.paystack_charge_id
         url = 'https://api.paystack.co/transaction/verify/{}'.format(reference)
 
@@ -519,7 +521,7 @@ class VerifyPayment(APIView):
             amount_new = amount // 100
             PaymentHistory.objects.filter(paystack_charge_id=reference).update(paid=True,
                                                                                         amount=amount_new)
-            client.coin += amount_new // 500  # Assuming 1 coin = 500 naira
+            client.coin += plan.token  # Assuming 1 coin = 500 naira
             client.save()
             return Response(resp)
         return Response(resp)

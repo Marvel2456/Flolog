@@ -116,6 +116,7 @@ class Client(models.Model):
 class Plan(models.Model):
     name = models.CharField(max_length=200, blank=True, null=True)
     price = models.DecimalField(max_digits=20, decimal_places=3, blank=True, null=True)
+    token = models.PositiveIntegerField(default=0, blank=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False) 
 
     def __str__(self):
