@@ -91,6 +91,7 @@ class LoginSerializer(serializers.ModelSerializer):
     tokens = serializers.CharField(read_only=True)
     is_client = serializers.BooleanField(read_only=True)
     is_pharmacist = serializers.BooleanField(read_only=True)
+    is_verified = serializers.BooleanField(read_only=True)
     
     class Meta:
         model = CustomUser
@@ -111,7 +112,8 @@ class LoginSerializer(serializers.ModelSerializer):
             'email': user.email,
             'tokens' : user.tokens,
             'is_client' : user.is_client,
-            'is_pharmacist' :user.is_pharmacist
+            'is_pharmacist' :user.is_pharmacist,
+            'is_verified': user.is_verified
         }
     
     
