@@ -34,7 +34,7 @@ class ClientRegisterView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         if pharma_uuid is not None:
             referred_by_pharma = Pharmacist.objects.get(id=pharma_uuid)
-            instance = serializer.save()
+            instance = serializer.save(is_verified=False)
             client = CustomUser.objects.get(id=instance.id)
             client_profile = Client.objects.get(user=client)
             client_profile.referred_by = referred_by_pharma
