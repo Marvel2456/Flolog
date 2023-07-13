@@ -95,7 +95,7 @@ class LoginSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'tokens', 'is_client', 'is_pharmacist']
+        fields = ['email', 'password', 'tokens', 'is_client', 'is_pharmacist', 'is_verified']
         
     def validate(self, attrs):
         email = attrs.get('email', '')
