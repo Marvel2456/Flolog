@@ -34,7 +34,7 @@ class ClientRegisterView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         if pharma_uuid is not None:
             referred_by_pharma = Pharmacist.objects.get(id=pharma_uuid)
-            instance = serializer.save()
+            instance = serializer.save(is_verified=False)
             client = CustomUser.objects.get(id=instance.id)
             client_profile = Client.objects.get(user=client)
             client_profile.referred_by = referred_by_pharma
@@ -525,18 +525,3 @@ class VerifyPayment(APIView):
                 client.save()
             return Response(resp)
         return Response(resp)
-
-
-
-
-        # if resp['data']['status'] == 'success':
-        #     amount = resp['data']['amount']
-        #     amount_new = amount // 100
-        #     pay = PaymentHistory.objects.filter(paystack_charge_id=reference).update(paid=True,
-        #                                                                                 amount=amount_new)
-        #     if reference:
-            
-        #         client.coin += pay.plan.token
-        #         client.save()
-        #     return Response(resp)
-        # return Response(resp)

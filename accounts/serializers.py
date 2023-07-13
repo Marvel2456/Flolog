@@ -42,6 +42,7 @@ class ClientRegistrationSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data['is_client'] = True
+        validated_data['is_verified'] = False
         return CustomUser.objects.create_user(**validated_data)
     
 
