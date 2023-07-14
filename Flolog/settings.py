@@ -191,6 +191,9 @@ EMAIL_BACKEND = 'django_ses.SESBackend'
 
 AWS_ACCESS_KEY_ID = 'AKIAYTSBV44JGM43ZGSG'
 AWS_SECRET_ACCESS_KEY = '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'
+AWS_SES_REGION_NAME = 'us-east-2'
+AWS_SES_REGION_ENDPOINT = 'email.us-east-2.amazonaws.com'
+DEFAULT_FROM_EMAIL = 'florixhealthcare@gmail.com'
 
 
 CORS_ALLOW_ALL_ORIGINS: True
