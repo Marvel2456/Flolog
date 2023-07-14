@@ -185,7 +185,12 @@ REST_FRAMEWORK = {
     )  
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django_ses.SESBackend'
+
+
+AWS_ACCESS_KEY_ID = 'AKIAYTSBV44JGM43ZGSG'
+AWS_SECRET_ACCESS_KEY = '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'
 
 
 CORS_ALLOW_ALL_ORIGINS: True
