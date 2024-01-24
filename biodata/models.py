@@ -48,7 +48,7 @@ class MedicalRecord(models.Model):
     age = models.CharField(max_length=200, blank=True, null=True)
     weight = models.CharField(max_length=200, blank=True, null=True)
     height = models.CharField(max_length=200, blank=True, null=True)
-    Blood_Group_Chpice = (
+    Blood_Group_Choice = (
         ('O+', 'O+'),
         ('O-', 'O-'),
         ('A+', 'A+'),
@@ -58,7 +58,7 @@ class MedicalRecord(models.Model):
         ('AB+', 'AB+'),
         ('AB-', 'AB-'),
     )
-    blood_group = models.CharField(max_length=10, choices=Blood_Group_Chpice, default="O+", blank=True, null=True)
+    blood_group = models.CharField(max_length=10, choices=Blood_Group_Choice, default="O+", blank=True, null=True)
     Genotype_Choice = (
         ('AA', 'AA'),
         ('AS', 'AS'),

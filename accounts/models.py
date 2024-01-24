@@ -136,7 +136,7 @@ class PaymentHistory(models.Model):
         verbose_name_plural = 'payment histories'
 
     def __str__(self) -> str:
-        return f'{self.client.email} - {self.plan} - {self.amount} - {self.date}'
+        return f'{self.client} - {self.plan} - {self.amount} - {self.date}'
     
     
 class Activity(models.Model):

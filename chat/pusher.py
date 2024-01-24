@@ -7,3 +7,8 @@ pusher_client = pusher.Pusher(
   cluster='mt1',
   ssl=True
 )
+
+# app_id = "1745434"
+# key = "da994b95e95948809271"
+# secret = "438d918f8793beafd10f"
+# cluster = "mt1"
